@@ -137,12 +137,14 @@ export default function App() {
                     <svg width="16" height="16" viewBox="0 0 20 20" className="opacity-80"><path fill="currentColor" d="M5 7l5 6 5-6z"/></svg>
                   </button>
                   {menuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 rounded-xl border border-white/10 bg-[#0b0c10] shadow-[0_0_22px_rgba(99,102,241,.35)] z-50">
-                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5 cursor-pointer" onClick={()=>{setPage('control'); setMenuOpen(false);}}>Control Panel</button>
-                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5 cursor-pointer" onClick={()=>{setPage('community'); setMenuOpen(false);}}>Community</button>
-                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5 cursor-pointer" onClick={()=>{setPage('settings'); setMenuOpen(false);}}>Settings</button>
-                      <button className="block w-full text-left px-4 py-3 text-sm text-indigo-300 hover:bg-white/5 cursor-pointer font-medium" onClick={()=>{setPage('pricing'); setMenuOpen(false);}}>Upgrade to Pro</button>
-                      <button className="block w-full text-left px-4 py-3 text-sm text-red-300 hover:bg-white/5 cursor-pointer" onClick={()=>{setUser(null); setMenuOpen(false); showToast('Signed out');}}>Sign out</button>
+                    <div className="absolute right-0 mt-2 w-56 rounded-xl border border-white/10 bg-[#0b0c10]/95 backdrop-blur-sm shadow-[0_0_22px_rgba(99,102,241,.35)] z-[100]">
+                      <div className="py-1">
+                        <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/10 transition-colors cursor-pointer" onClick={()=>{setPage('control'); setMenuOpen(false);}}>Control Panel</button>
+                        <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/10 transition-colors cursor-pointer" onClick={()=>{setPage('community'); setMenuOpen(false);}}>Community</button>
+                        <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/10 transition-colors cursor-pointer" onClick={()=>{setPage('settings'); setMenuOpen(false);}}>Settings</button>
+                        <button className="block w-full text-left px-4 py-3 text-sm text-indigo-300 hover:bg-white/10 transition-colors cursor-pointer font-medium" onClick={()=>{setPage('pricing'); setMenuOpen(false);}}>Upgrade to Pro</button>
+                        <button className="block w-full text-left px-4 py-3 text-sm text-red-300 hover:bg-white/10 transition-colors cursor-pointer" onClick={()=>{setUser(null); setMenuOpen(false); showToast('Signed out');}}>Sign out</button>
+                      </div>
                     </div>
                   )}
                 </div>
