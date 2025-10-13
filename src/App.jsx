@@ -1,330 +1,501 @@
-import React, { useMemo, useState } from "react";
-import { ChevronDown, ChevronRight, LogOut, Settings, Users, PanelLeft, Sparkles, Brain, FileText, ArrowUpRight } from "lucide-react";
+import { useEffect, useRef, useState } from 'react'
+import { Check, ChevronRight, Shield, Zap, LogIn, Star, Github } from 'lucide-react'
 
-/* ---------- tiny UI helpers ---------- */
-const cx = (...a) => a.filter(Boolean).join(" ");
-const NavItem = ({ icon: Icon, label, active, onClick, className }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={cx(
-      "w-full flex items-center gap-2 rounded-md px-3 py-2 text-sm transition",
-      active ? "bg-white/10 text-white" : "text-white/80 hover:bg-white/5 hover:text-white",
-      className
-    )}
-  >
-    {Icon && <Icon size={16} className="shrink-0" />}
-    <span className="truncate">{label}</span>
-  </button>
-);
-
-const SectionTitle = ({ children }) => (
-  <div className="px-3 pt-4 pb-2 text-[11px] tracking-wide uppercase text-white/40">{children}</div>
-);
-
-/* ---------- fake data placeholders ---------- */
-const demoEmail = "hopla07@outlook.com";
-const demoSaved = {
-  aiGenerated: [
-    { id: "a1", title: "Rhetorical Analysis – Draft", words: 742 },
-    { id: "a2", title: "PathwayU Reflection", words: 518 },
-  ],
-  humanized: [
-    { id: "h1", title: "Hip-Hop Feminism Short", words: 603 },
-  ],
-};
-
-/* ---------- simple analyzers for AI Detector ---------- */
-const AI_WORDS = [
-  "moreover","furthermore","additionally","in conclusion","thus","hence","delve","paradigm",
-  "realm","notably","intricate","ameliorate","underscores","comprehensive","crucial","pivotal"
-];
-
-function analyzeText(txt) {
-  const words = txt.trim().split(/\s+/).filter(Boolean);
-  const sentences = txt.split(/(?<=[.!?])\s+/);
-  const aiHits = AI_WORDS.reduce((cnt, w) => cnt + (txt.toLowerCase().includes(w) ? 1 : 0), 0);
-  const avgLen = sentences.length ? words.length / sentences.length : 0;
-  const uniqueSentences = new Set(sentences.map(s => s.trim().toLowerCase()));
-  const internalDupes = sentences.length - uniqueSentences.size;
-  return {
-    wordCount: words.length,
-    sentenceCount: sentences.length,
-    avgSentenceLen: Number(avgLen.toFixed(1)),
-    aiPhraseMatches: aiHits,
-    repeatedSentences: internalDupes
+// Minimal UI primitives (no external UI kit)
+function Button({ className = '', variant, size, disabled, ...props }) {
+  const base = "inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400 disabled:opacity-60 disabled:cursor-not-allowed";
+  const variants = {
+    default: "bg-indigo-500 hover:bg-indigo-400 text-white",
+    secondary: "bg-white text-black hover:bg-white/90",
+    outline: "border border-white/20 text-white hover:bg-white/5",
+    ghost: "bg-transparent text-white/80 hover:text-white"
   };
+  const sizes = { sm: "px-3 py-1.5 text-sm", md: "px-4 py-2", lg: "px-5 py-2.5 text-base" };
+  const v = variants[variant || "default"]; const s = sizes[size || "md"];
+  return <button disabled={disabled} className={`${base} ${v} ${s} ${className}`} {...props} />;
 }
+function Card({ className = '', ...props }) { return <div className={`rounded-2xl border ${className}`} {...props} /> }
+function CardHeader({ className = '', ...props }) { return <div className={`px-6 pt-6 ${className}`} {...props} /> }
+function CardTitle({ className = '', ...props }) { return <div className={`text-lg font-semibold ${className}`} {...props} /> }
+function CardContent({ className = '', ...props }) { return <div className={`px-6 pb-6 ${className}`} {...props} /> }
 
-/* ---------- main app ---------- */
 export default function App() {
-  const [view, setView] = useState("dashboard"); // dashboard | saved-ai | saved-human | humanizer | detector | writer
-  const [savedOpen, setSavedOpen] = useState(false);
+  const [page, setPage] = useState('home')
+  const [yearly, setYearly] = useState(true)
+  const showcaseRef = useRef(null)
+
+  // auth + ui state
+  const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [toast, setToast] = useState(null);
+  const showToast = (msg) => { setToast(msg); setTimeout(()=>setToast(null), 2600); };
 
-  // AI Detector state
-  const [detectInput, setDetectInput] = useState("");
-  const detectResult = useMemo(() => analyzeText(detectInput || ""), [detectInput]);
+  // Docs/Updates entries
+  const updates = [
+    {
+      version: "v1.0.1",
+      date: "2025-10-09",
+      title: "Fixes & polish",
+      items: [
+        "Community page layout fix (single footer)",
+        "Larger menu hit areas for user dropdown",
+        "Docs page added (this page)",
+      ],
+    },
+    {
+      version: "v1.0",
+      date: "2025-10-09",
+      title: "Live",
+      items: [
+        "Landing hero, features, stats, and pricing",
+        "Download page with platform cards",
+        "Login & signup with themed toasts",
+        "Community page + Discord launcher",
+        "Prototype Control Panel layout",
+      ],
+    },
+  ];
 
-  // Humanizer state (skeleton)
-  const [humanText, setHumanText] = useState("");
-  const [humanizeLevel, setHumanizeLevel] = useState(60);
-  const runHumanize = () => {
-    // very light placeholder – swaps a few AI-ish words and shortens some sentences
-    const replacements = {
-      moreover: "also",
-      furthermore: "also",
-      additionally: "also",
-      "in conclusion": "overall",
-      thus: "so",
-      hence: "so",
-      paradigm: "model",
-      underscores: "shows"
-    };
-    let out = humanText;
-    Object.entries(replacements).forEach(([k, v]) => {
-      out = out.replace(new RegExp(`\\b${k}\\b`, "gi"), v);
-    });
-    // Break long sentences a bit
-    out = out.split(/(?<=[.!?])\s+/).map(s => (s.length > 160 - humanizeLevel ? s.replace(/, /, ". ") : s)).join(" ");
-    setHumanText(out);
-  };
+  const features = [
+    { icon: <Zap className="w-5 h-5" />, title: "Fast setup", text: "Plug-and-play onboarding with sane defaults." },
+    { icon: <Shield className="w-5 h-5" />, title: "Privacy-first", text: "Local controls with transparent permissions." },
+    { icon: <Star className="w-5 h-5" />, title: "Pro toolkit", text: "Smart macros, presets, and autosave." },
+  ];
+
+  const tiers = [
+    { name: "Basic", priceM: 5, priceY: 48, cta: "Get Basic", highlights: ["Core typing engine", "10 saved presets", "Email support"], popular: false },
+    { name: "Pro", priceM: 15, priceY: 144, cta: "Go Pro", highlights: ["All Basic features", "Unlimited presets", "Stealth mode & hotkeys", "Priority support"], popular: true },
+    { name: "Team", priceM: 29, priceY: 276, cta: "Start Team", highlights: ["Seat management", "Central billing", "Shared presets"], popular: false },
+  ];
+
+  useEffect(() => {
+    try {
+      const sections = Array.from(document.querySelectorAll('section'));
+      if (page === 'home') {
+        console.assert(sections.length >= 3, 'Expected 3+ <section> elements on home page.');
+      } else if (page === 'download') {
+        console.assert(sections.length === 1, 'Expected 1 <section> on the download page.');
+      } else if (page === 'login') {
+        console.assert(sections.length === 1, 'Expected 1 <section> on the login page.');
+      } else if (page === 'docs') {
+        console.assert(sections.length === 1, 'Expected 1 <section> on the docs page.');
+      }
+    } catch {}
+  }, [page]);
+
+  const gotoShowcase = () => showcaseRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   return (
-    <div className="min-h-screen bg-[#0b0c10] text-white">
-      {/* Top bar */}
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0b0c10]/80 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-          <div className="flex items-center gap-3">
-            <div className="h-7 w-7 rounded-md bg-white/10 grid place-items-center text-white/90">O</div>
-            <div className="text-sm text-white/60">Ovara</div>
-          </div>
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setMenuOpen(v => !v)}
-              className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm hover:bg-white/10"
-            >
-              <div className="h-6 w-6 rounded-full bg-white/10 grid place-items-center">👤</div>
-              <span className="hidden sm:inline text-white/80">{demoEmail}</span>
-              <ChevronDown size={16} className={cx("transition", menuOpen && "rotate-180")} />
-            </button>
+    <>
+      <style>{`
+        @keyframes softPulse { 0%, 100% { box-shadow: 0 0 35px rgba(99,102,241,.35); } 50% { box-shadow: 0 0 55px rgba(99,102,241,.6); } }
+        .pulse-glow { animation: softPulse 2.8s ease-in-out infinite; }
+      `}</style>
 
-            {/* Dropdown menu – pointer events enabled & above everything */}
-            {menuOpen && (
-              <div
-                className="absolute right-0 mt-2 w-56 rounded-lg border border-white/10 bg-[#0c0d12] p-1 shadow-xl z-50"
-                onMouseLeave={() => setMenuOpen(false)}
-              >
-                <MenuItem icon={PanelLeft} label="Control Panel" onClick={() => { setView("dashboard"); setMenuOpen(false); }} />
-                <MenuItem icon={Users} label="Community" onClick={() => { window.open("https://discord.gg/your-code", "_blank"); }} />
-                <MenuItem icon={Settings} label="Settings" onClick={() => { setMenuOpen(false); /* route later */ }} />
-                {/* UPGRADE */}
-                <MenuItem
-                  icon={ArrowUpRight}
-                  label="Upgrade"
-                  className="text-emerald-300 hover:text-emerald-200"
-                  onClick={() => { setMenuOpen(false); window.location.href = "/pricing"; }}
-                />
-                <div className="my-1 h-px bg-white/10" />
-                <MenuItem icon={LogOut} label="Sign out" className="text-red-300 hover:text-red-200" onClick={() => { /* signout */ }} />
-              </div>
-            )}
-          </div>
+      <div className="min-h-screen bg-[#0b0c10] text-white">
+        {/* Glow backdrop */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-24 left-1/2 h-72 w-[56rem] -translate-x-1/2 rounded-full blur-3xl opacity-30"
+               style={{ background: "radial-gradient(closest-side, rgba(130,87,229,.6), rgba(0,0,0,0))" }} />
+          <div className="absolute -bottom-24 left-1/3 h-72 w-[48rem] -translate-x-1/3 rounded-full blur-3xl opacity-25"
+               style={{ background: "radial-gradient(closest-side, rgba(37,99,235,.55), rgba(0,0,0,0))" }} />
         </div>
-      </header>
 
-      <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6 px-4 py-6">
-        {/* Sidebar – full height */}
-        <aside className="col-span-12 md:col-span-3 lg:col-span-3">
-          <div className="sticky top-16 rounded-xl border border-white/10 bg-[#0c0d12] p-3 min-h-[calc(100vh-6rem)]">
-            <SectionTitle>Saved</SectionTitle>
-
-            {/* Saved essays (collapsible) */}
-            <button
-              type="button"
-              onClick={() => setSavedOpen(o => !o)}
-              className={cx(
-                "w-full flex items-center justify-between rounded-md px-3 py-2 text-sm",
-                "text-white/80 hover:bg-white/5 hover:text-white"
+        {/* Header (hidden on control page) */}
+        <header className={`relative z-10 ${page==='control' ? 'hidden' : ''}`}>
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setPage('home')}>
+              <div className="h-8 w-8 rounded-md bg-black grid place-items-center ring-1 ring-purple-500/40 shadow-[0_0_18px_rgba(168,85,247,.35)]">
+                {/* Neon O logo */}
+                <svg viewBox="0 0 100 100" className="h-6 w-6">
+                  <defs>
+                    <radialGradient id="g" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#ffffff" />
+                      <stop offset="60%" stopColor="#a855f7" />
+                      <stop offset="100%" stopColor="#7c3aed" />
+                    </radialGradient>
+                  </defs>
+                  <circle cx="50" cy="50" r="28" fill="none" stroke="url(#g)" strokeWidth="10" style={{filter:"drop-shadow(0 0 6px rgba(168,85,247,.9))"}} />
+                </svg>
+              </div>
+              <span className="font-semibold tracking-tight text-white/90">Ovara</span>
+            </div>
+            <nav className="hidden md:flex items-center gap-8 text-sm text-white/70">
+              <button className="hover:text-white transition" onClick={() => setPage('home')}>Home</button>
+              <a className="hover:text-white transition" href="#features" onClick={(e)=>{e.preventDefault(); document.getElementById('features')?.scrollIntoView({behavior:'smooth'});}}>Features</a>
+              <button className="hover:text-white transition" onClick={() => setPage('docs')}>Docs</button>
+            </nav>
+            <div className="flex items-center gap-3 relative">
+              {!user ? (<>
+                <Button variant="ghost" className="text-white/80 hover:text-white" onClick={() => setPage('login')}>Log in</Button>
+                <Button className="bg-indigo-500 hover:bg-indigo-400" onClick={() => setPage('download')}>Download</Button>
+              </>) : (
+                <div className="relative">
+                  <button onClick={()=>setMenuOpen(!menuOpen)} className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-1.5 text-sm hover:bg-white/10">
+                    <span className="inline-block h-2 w-2 rounded-full bg-emerald-400"/> {user.email?.split('@')[0] || 'User'}
+                    <svg width="16" height="16" viewBox="0 0 20 20" className="opacity-80"><path fill="currentColor" d="M5 7l5 6 5-6z"/></svg>
+                  </button>
+                  {menuOpen && (
+                    <div className="absolute right-0 mt-2 w-56 rounded-xl border border-white/10 bg-[#0b0c10] shadow-[0_0_22px_rgba(99,102,241,.35)]">
+                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5" onClick={()=>{setPage('control'); setMenuOpen(false);}}>Control Panel</button>
+                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5" onClick={()=>{setPage('community'); setMenuOpen(false);}}>Community</button>
+                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5" onClick={()=>{setPage('settings'); setMenuOpen(false);}}>Settings</button>
+                      <button className="block w-full text-left px-4 py-3 text-sm text-red-300 hover:bg-white/5" onClick={()=>{setUser(null); setMenuOpen(false); showToast('Signed out');}}>Sign out</button>
+                    </div>
+                  )}
+                </div>
               )}
-            >
-              <span className="flex items-center gap-2">
-                <FileText size={16} className="shrink-0" />
-                Saved essays
-              </span>
-              {savedOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-            </button>
-
-            {savedOpen && (
-              <div className="ml-6 mt-1 space-y-1">
-                <NavItem
-                  label="AI-generated"
-                  active={view === "saved-ai"}
-                  onClick={() => setView("saved-ai")}
-                />
-                <NavItem
-                  label="Humanized essays"
-                  active={view === "saved-human"}
-                  onClick={() => setView("saved-human")}
-                />
-              </div>
-            )}
-
-            <SectionTitle>Features</SectionTitle>
-            <NavItem icon={Sparkles} label="Humanizer" active={view === "humanizer"} onClick={() => setView("humanizer")} />
-            <NavItem icon={Brain} label="AI detector" active={view === "detector"} onClick={() => setView("detector")} />
-            <NavItem icon={FileText} label="Essay writer" active={view === "writer"} onClick={() => setView("writer")} />
+            </div>
           </div>
-        </aside>
+        </header>
 
-        {/* Main */}
-        <main className="col-span-12 md:col-span-9 lg:col-span-9">
-          {view === "dashboard" && <Dashboard />}
-          {view === "saved-ai" && <SavedList title="AI-generated" items={demoSaved.aiGenerated} />}
-          {view === "saved-human" && <SavedList title="Humanized essays" items={demoSaved.humanized} />}
-          {view === "humanizer" && (
-            <Card title="Humanizer">
-              <p className="text-white/70 mb-3">Paste text and tweak the slider. We’ll keep refining this logic.</p>
-              <textarea
-                value={humanText}
-                onChange={e => setHumanText(e.target.value)}
-                placeholder="Paste your text…"
-                className="w-full h-56 rounded-lg bg-black/30 border border-white/10 p-3 outline-none"
-              />
-              <div className="mt-3 flex items-center gap-4">
-                <label className="text-sm text-white/60">Humanize level</label>
-                <input type="range" min={0} max={100} value={humanizeLevel} onChange={e => setHumanizeLevel(+e.target.value)} />
-                <span className="text-sm text-white/70">{humanizeLevel}</span>
-                <button
-                  onClick={runHumanize}
-                  className="ml-auto rounded-md bg-emerald-500/90 px-4 py-2 text-sm hover:bg-emerald-400"
-                >
-                  Humanize
-                </button>
-              </div>
-            </Card>
-          )}
-          {view === "detector" && (
-            <Card title="AI detector">
-              <p className="text-white/70 mb-3">Paste an essay and click Scan. This rough pass flags AI-ish phrasing and internal duplicates.</p>
-              <textarea
-                value={detectInput}
-                onChange={e => setDetectInput(e.target.value)}
-                placeholder="Paste text…"
-                className="w-full h-56 rounded-lg bg-black/30 border border-white/10 p-3 outline-none"
-              />
-              <div className="mt-3 flex items-center gap-3">
-                <button
-                  onClick={() => setDetectInput((t) => t)}
-                  className="rounded-md bg-indigo-500/90 px-4 py-2 text-sm hover:bg-indigo-400"
-                >
-                  Scan
-                </button>
+        {/* HOME */}
+        {page === 'home' && (<>
+          <section className="relative z-10">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 md:py-24 flex flex-col items-center text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70">
+                <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" /> v1.0 — Live
+              </span>
+              <h1 className="mt-5 text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
+                Ovara — <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-fuchsia-400">The Writing Tool</span>
+              </h1>
+              <p className="mt-5 max-w-2xl text-white/90 text-lg">Ease homework. Draft faster. Tighter focus for essays and research.</p>
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <Button size="lg" className="bg-indigo-500 hover:bg-indigo-400" onClick={() => setPage('download')}> 
+                  Download Now <ChevronRight className="ml-1.5 h-4 w-4" />
+                </Button>
+                <Button size="lg" variant="secondary" className="bg-white text-black hover:bg-white/90" onClick={gotoShowcase}>
+                  See in Action
+                </Button>
+                <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/5">
+                  <Github className="mr-1.5 h-4 w-4" /> Source
+                </Button>
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                <Stat label="Words" value={detectResult.wordCount} />
-                <Stat label="Sentences" value={detectResult.sentenceCount} />
-                <Stat label="Avg sentence length" value={detectResult.avgSentenceLen} />
-                <Stat label="AI phrase matches" value={detectResult.aiPhraseMatches} />
-                <Stat label="Repeated sentences" value={detectResult.repeatedSentences} />
+              {/* Stats styled like download cards */}
+              <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
+                {[
+                  { k: ">6M", v: "Downloads" },
+                  { k: "200+", v: "Modules" },
+                  { k: "50+", v: "Commands" },
+                  { k: "100k+", v: "Lines of code" },
+                ].map((s) => (
+                  <Card key={s.v} className="bg-white/10 border-white/20 backdrop-blur-md shadow-[0_0_35px_rgba(99,102,241,.35)] hover:shadow-[0_0_55px_rgba(99,102,241,.55)] transition pulse-glow">
+                    <CardContent className="py-7 text-center">
+                      <div className="text-3xl md:text-4xl font-extrabold tracking-tight drop-shadow text-indigo-100">{s.k}</div>
+                      <div className="text-xs md:text-sm text-indigo-200 mt-1">{s.v}</div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-              <div className="mt-3 text-xs text-white/50">
-                Note: This is a lightweight, offline heuristic. For plagiarism across the web, we’ll add a server check later.
+            </div>
+          </section>
+
+          {/* Features */}
+          <section id="features" className="relative z-10 py-12 md:py-16">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+              <div className="grid md:grid-cols-3 gap-6">
+                {features.map((f) => (
+                  <Card key={f.title} className="bg-white/5 border-white/10">
+                    <CardHeader className="flex-row items-center gap-3">
+                      <div className="rounded-xl bg-white/10 p-2">{f.icon}</div>
+                      <CardTitle className="text-white">{f.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-white/70 mt-2">{f.text}</CardContent>
+                  </Card>
+                ))}
               </div>
-            </Card>
-          )}
-          {view === "writer" && (
-            <Card title="Essay writer">
-              <p className="text-white/70 mb-3">
-                Start with your prompt; we’ll scaffold an outline and sections you can edit. (This is the basic scaffold—next we’ll wire generation.)
-              </p>
-              <input
-                type="text"
-                placeholder="Topic or assignment prompt…"
-                className="w-full rounded-lg bg-black/30 border border-white/10 p-3 outline-none"
-              />
-              <div className="mt-3 grid gap-2">
-                <div className="rounded-lg border border-white/10 bg-black/20 p-3">
-                  <div className="text-sm font-medium mb-1">Outline</div>
-                  <ul className="list-disc pl-5 text-white/80 text-sm space-y-1">
-                    <li>Hook + context</li>
-                    <li>Thesis</li>
-                    <li>Body 1 (evidence + analysis)</li>
-                    <li>Body 2 (counterpoint)</li>
-                    <li>Conclusion (so what?)</li>
+            </div>
+          </section>
+
+          {/* Showcase */}
+          <section ref={showcaseRef} className="relative z-10 py-6 md:py-10">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+              <Card className="bg-gradient-to-br from-white/5 to-white/10 border-white/10">
+                <CardContent className="p-0">
+                  <div className="aspect-video w-full rounded-2xl overflow-hidden bg-black/60 flex items-center justify-center">
+                    <div className="text-white/60 text-sm">Drop your extension GIF / screenshot here</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+
+          {/* Pricing */}
+          <section id="pricing" className="relative z-10 py-16">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <h2 className="text-3xl md:text-4xl font-bold">Choose your plan</h2>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className={!yearly ? "text-white" : "text-white/50"}>Monthly</span>
+                  <button onClick={() => setYearly((v) => !v)} className="relative inline-flex h-6 w-11 items-center rounded-full bg-white/10">
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${yearly ? "translate-x-6" : "translate-x-1"}`} />
+                  </button>
+                  <span className={yearly ? "text-white" : "text-white/50"}>Yearly</span>
+                </div>
+              </div>
+
+              <div className="mt-8 grid md:grid-cols-3 gap-6">
+                {tiers.map((t) => (
+                  <Card key={t.name} className={`bg-white/10 border-white/20 backdrop-blur-md shadow-[0_0_35px_rgba(99,102,241,.35)] hover:shadow-[0_0_55px_rgba(99,102,241,.55)] transition pulse-glow ${t.popular ? "ring-2 ring-indigo-400" : ""}`}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-indigo-300 drop-shadow">{t.name}</CardTitle>
+                        {t.popular && (<span className="rounded-full bg-indigo-500/20 text-indigo-300 text-xs px-2 py-0.5">Most popular</span>)}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold">
+                        ${yearly ? t.priceY : t.priceM}
+                        <span className="text-sm text-indigo-200">/{yearly ? "yr" : "mo"}</span>
+                      </div>
+                      <ul className="mt-4 space-y-2 text-sm text-indigo-100/90">
+                        {t.highlights.map((h) => (<li key={h} className="flex items-center gap-2"><Check className="h-4 w-4" /> {h}</li>))}
+                      </ul>
+                      <Button className="mt-6 w-full bg-indigo-500 hover:bg-indigo-400">{t.cta}</Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>)}
+
+        {/* DOWNLOAD PAGE */}
+        {page === 'download' && (
+          <section className="relative z-10 py-16">
+            <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">Download Ovara</h1>
+              <p className="mt-3 text-white/80 max-w-2xl">Choose your platform and get started in seconds.</p>
+              <div className="mt-8 grid md:grid-cols-3 gap-6">
+                {[
+                  { name: "Chrome", note: "Coming soon" },
+                  { name: "Edge", note: "Coming soon" },
+                  { name: "Firefox", note: "Coming soon" },
+                ].map((d) => (
+                  <Card key={d.name} className="bg-white/10 border-white/20 backdrop-blur-md shadow-[0_0_35px_rgba(99,102,241,.35)] hover:shadow-[0_0_55px_rgba(99,102,241,.55)] transition pulse-glow">
+                    <CardHeader><CardTitle className="text-indigo-300 drop-shadow">{d.name}</CardTitle></CardHeader>
+                    <CardContent>
+                      <p className="text-white text-sm font-medium">{d.note}</p>
+                      <Button disabled className="mt-4 w-full bg-indigo-500 hover:bg-indigo-500/90 shadow-[0_0_30px_rgba(99,102,241,.45)] cursor-not-allowed">Coming soon</Button>
+                      <button onClick={() => setPage('login')} className="mt-3 w-full text-center text-indigo-200/95 hover:text-white underline text-xs">Join the waitlist</button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* LOGIN PAGE */}
+        {page === 'login' && (
+          <section className="relative z-10 py-16">
+            <div className="mx-auto max-w-md px-4 sm:px-6 lg:px-8">
+              <h1 className="text-3xl font-bold">Account</h1>
+              <p className="text-white/70 mt-1 text-sm">Log in or create an account to continue. New? Create an account below — we'll capture your email automatically.</p>
+              <Card className="mt-6 bg-white/5 border-white/10">
+                <CardContent className="pt-6">
+                  {/* Login */}
+                  <form className="space-y-3" onSubmit={(e)=>{e.preventDefault(); const email=(e.currentTarget.querySelector('input[placeholder="you@example.com"]')||{}).value||'user@ovara.app'; setUser({email}); setPage('home'); showToast('Welcome back'); }}>
+                    <div>
+                      <label className="block text-sm text-white/70">Email</label>
+                      <input className="mt-1 w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-indigo-400" placeholder="you@example.com" />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/70">Password</label>
+                      <input type="password" className="mt-1 w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-indigo-400" placeholder="••••••••" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <label className="flex items-center gap-2 text-xs text-white/70"><input type="checkbox" className="accent-indigo-500"/> Keep me signed in</label>
+                      <a className="text-xs text-indigo-300 hover:text-indigo-200">Forgot password?</a>
+                    </div>
+                    <Button className="w-full bg-indigo-500 hover:bg-indigo-400" type="submit">Sign in</Button>
+                  </form>
+
+                  {/* Sign up captures email */}
+                  <div className="mt-8 border-t border-white/10 pt-6">
+                    <h2 className="text-lg font-semibold">Create an account</h2>
+                    <form className="mt-3 space-y-3" onSubmit={(e)=>{e.preventDefault(); const el = document.getElementById('signup-email'); const email = (el && el.value) || ''; try { const list = JSON.parse(localStorage.getItem('ovara_users')||'[]'); list.push({ email, createdAt: Date.now() }); localStorage.setItem('ovara_users', JSON.stringify(list)); const wl = JSON.parse(localStorage.getItem('ovara_waitlist')||'[]'); wl.push({ email, from:'signup', createdAt: Date.now() }); localStorage.setItem('ovara_waitlist', JSON.stringify(wl)); } catch(_){} showToast('Account created — please log in'); setPage('login'); }}>
+                      <div>
+                        <label className="block text-sm text-white/70">Email</label>
+                        <input id="signup-email" className="mt-1 w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-indigo-400" placeholder="you@example.com" required />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-white/70">Password</label>
+                        <input type="password" className="mt-1 w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-indigo-400" placeholder="Create a password" required />
+                      </div>
+                      <Button className="w-full bg-indigo-500 hover:bg-indigo-400" type="submit">Create account</Button>
+                      <p className="text-xs text-white/60 mt-2">By signing up, you agree to our Terms and Privacy.</p>
+                    </form>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+        )}
+
+        {/* Community Page */}
+        {page === 'community' && (
+          <>
+            <section className="relative z-10 py-16">
+              <div className="mx-auto max-w-lg px-4 sm:px-6 lg:px-8">
+                <Card className="bg-white/10 border-white/20 backdrop-blur-md shadow-[0_0_35px_rgba(99,102,241,.45)]">
+                  <CardHeader>
+                    <CardTitle className="text-indigo-200 text-2xl">Join the Ovara Community</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-white/80 text-sm">Hop into our Discord to get updates, report issues, and meet other users. Click below to join.</p>
+                    <Button className="mt-4 w-full" onClick={()=>{ const url = localStorage.getItem('ovara_discord_url') || '#'; if(url==='#'){ showToast('Set ovara_discord_url in localStorage to enable'); } else { window.open(url, '_blank'); } }}>Open Discord</Button>
+                    <p className="text-xs text-white/50 mt-3">We’ll replace this with your real invite once you share it.</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+            <footer className="relative z-10 border-t border-white/10">
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 text-sm text-white/60 grid md:grid-cols-2 gap-6">
+                <div>
+                  <div className="flex items-center gap-2 cursor-pointer" onClick={() => setPage('home')}>
+                    <div className="h-6 w-6 rounded-md bg-black grid place-items-center ring-1 ring-purple-500/40 shadow-[0_0_18px_rgba(168,85,247,.35)]" />
+                    <span>Ovara</span>
+                  </div>
+                  <p className="mt-3 max-w-md">Built for writing faster and smarter.</p>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <div className="font-semibold text-white/80">Product</div>
+                    <ul className="mt-2 space-y-1">
+                      <li><button className="hover:text-white" onClick={() => setPage('download')}>Download</button></li>
+                      <li><button className="hover:text-white" onClick={()=>setPage('docs')}>Changelog</button></li>
+                      <li><a className="hover:text-white">Status</a></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-white/80">Resources</div>
+                    <ul className="mt-2 space-y-1">
+                      <li><button className="hover:text-white" onClick={()=>setPage('docs')}>Updates</button></li>
+                      <li><button className="hover:text-white" onClick={()=>setPage('community')}>Community</button></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-white/80">Company</div>
+                    <ul className="mt-2 space-y-1">
+                      <li><a className="hover:text-white">Terms</a></li>
+                      <li><a className="hover:text-white">Privacy</a></li>
+                      <li><button className="hover:text-white" onClick={()=>setPage('community')}>Discord server</button></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </footer>
+          </>
+        )}
+
+        {/* Hide global footer on control/community */}
+        {!(page==='control' || page==='community') && (
+          <footer className="relative z-10 border-t border-white/10">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 text-sm text-white/60 grid md:grid-cols-2 gap-6">
+              <div>
+                <div className="flex items-center gap-2 cursor-pointer" onClick={() => setPage('home')}>
+                  <div className="h-6 w-6 rounded-md bg-black grid place-items-center ring-1 ring-purple-500/40 shadow-[0_0_18px_rgba(168,85,247,.35)]" />
+                  <span>Ovara</span>
+                </div>
+                <p className="mt-3 max-w-md">Built for writing faster and smarter.</p>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <div className="font-semibold text-white/80">Product</div>
+                  <ul className="mt-2 space-y-1">
+                    <li><button className="hover:text-white" onClick={() => setPage('download')}>Download</button></li>
+                    <li><button className="hover:text-white" onClick={()=>setPage('docs')}>Changelog</button></li>
+                    <li><a className="hover:text-white">Status</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <div className="font-semibold text-white/80">Resources</div>
+                  <ul className="mt-2 space-y-1">
+                    <li><button className="hover:text-white" onClick={()=>setPage('docs')}>Updates</button></li>
+                    <li><button className="hover:text-white" onClick={()=>setPage('community')}>Community</button></li>
+                  </ul>
+                </div>
+                <div>
+                  <div className="font-semibold text-white/80">Company</div>
+                  <ul className="mt-2 space-y-1">
+                    <li><a className="hover:text-white">Terms</a></li>
+                    <li><a className="hover:text-white">Privacy</a></li>
+                    <li><button className="hover:text-white" onClick={()=>setPage('community')}>Discord server</button></li>
                   </ul>
                 </div>
               </div>
-            </Card>
-          )}
-        </main>
+            </div>
+          </footer>
+        )}
+
+        {/* Toast */}
+        {toast && (
+          <div className="fixed bottom-4 right-4 z-50 rounded-xl border border-white/10 bg-white/10 backdrop-blur-md px-4 py-3 text-sm shadow-[0_0_35px_rgba(99,102,241,.45)]">
+            {toast}
+          </div>
+        )}
+
+        {/* Docs Page */}
+        {page === 'docs' && (
+          <section className="relative z-10 py-16">
+            <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+              <h1 className="text-4xl font-extrabold tracking-tight">Docs / Updates</h1>
+              <p className="text-white/70 mt-2">Latest releases, fixes, and improvements.</p>
+              <div className="mt-6 space-y-4">
+                {updates.map(u => (
+                  <Card key={u.version} className="bg-white/10 border-white/20">
+                    <CardHeader>
+                      <CardTitle className="text-indigo-200">{u.version} — {u.title} <span className="text-xs text-white/50 ml-2">{u.date}</span></CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="list-disc pl-5 text-sm text-white/80 space-y-1">
+                        {u.items.map((it, i)=> <li key={i}>{it}</li>)}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* CONTROL PANEL */}
+        {page === 'control' && (
+          <section className="relative z-10 py-0">
+            <div className="grid grid-cols-[260px_1fr] min-h-[80vh]">
+              {/* Sidebar */}
+              <div className="border-r border-white/10 bg-white/5">
+                <div className="p-4 flex items-center gap-2 cursor-pointer" onClick={()=>setPage('home')}>
+                  <div className="h-8 w-8 rounded-md bg-black ring-1 ring-purple-500/40" />
+                  <div className="font-semibold">Ovara</div>
+                </div>
+                <div className="px-3 pb-6 space-y-1">
+                  <div className="px-3 py-2 text-xs uppercase tracking-wide text-white/50">Saved</div>
+                  <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">Saved essays</button>
+                  <div className="px-3 pt-4 pb-2 text-xs uppercase tracking-wide text-white/50">Features</div>
+                  <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">Humanizer</button>
+                  <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">AI detector</button>
+                  <button className="w-full text-left px-3 py-2 rounded-md hover:bg-white/10">Essay writer</button>
+                </div>
+              </div>
+              {/* Main */}
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Ovara Tool</h2>
+                </div>
+                <div className="mt-6 grid gap-4">
+                  <Card className="bg:white/5 border-white/10">
+                    <CardHeader><CardTitle>Welcome, {user?.email || 'user'}</CardTitle></CardHeader>
+                    <CardContent><p className="text-white/70 text-sm">This is your hub. We’ll wire these sections to the extension next: Saved essays, Humanizer, AI detector, Essay writer.</p></CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
       </div>
-    </div>
-  );
+    </>
+  )
 }
-
-/* ---------- small building blocks ---------- */
-const MenuItem = ({ icon: Icon, label, onClick, className }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={cx(
-      "flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-white/80 hover:bg-white/5 hover:text-white text-left",
-      "cursor-pointer",
-      className
-    )}
-  >
-    {Icon && <Icon size={16} className="shrink-0" />}
-    <span>{label}</span>
-  </button>
-);
-
-const Card = ({ title, children }) => (
-  <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-4">
-    <div className="mb-3 text-lg font-semibold">{title}</div>
-    {children}
-  </div>
-);
-
-const Stat = ({ label, value }) => (
-  <div className="rounded-lg border border-white/10 bg-black/20 p-3">
-    <div className="text-white/50 text-xs">{label}</div>
-    <div className="text-white/90 text-base">{String(value)}</div>
-  </div>
-);
-
-const Dashboard = () => (
-  <Card title="Ovara Tool">
-    <div className="rounded-xl border border-white/10 bg-black/30 p-4">
-      <div className="text-white/90 font-medium mb-1">Welcome, {demoEmail}</div>
-      <div className="text-white/60 text-sm">
-        This is your hub. We’ll wire these sections to the extension next: Saved essays, Humanizer, AI detector, Essay writer.
-      </div>
-    </div>
-  </Card>
-);
-
-const SavedList = ({ title, items }) => (
-  <Card title={title}>
-    {items.length === 0 ? (
-      <div className="text-sm text-white/60">No items yet.</div>
-    ) : (
-      <ul className="divide-y divide-white/10">
-        {items.map((x) => (
-          <li key={x.id} className="flex items-center justify-between py-2">
-            <div className="min-w-0">
-              <div className="truncate">{x.title}</div>
-              <div className="text-xs text-white/50">{x.words} words</div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="rounded-md border border-white/10 px-3 py-1 text-xs hover:bg-white/5">Open</button>
-              <button className="rounded-md border border-white/10 px-3 py-1 text-xs hover:bg-white/5">Delete</button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    )}
-  </Card>
-);
