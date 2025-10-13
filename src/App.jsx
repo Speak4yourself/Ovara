@@ -1,3 +1,4 @@
+// BUILD-FP: src/App.jsx loaded
 import { useEffect, useRef, useState } from 'react'
 import { Check, ChevronRight, Shield, Zap, LogIn, Star, Github } from 'lucide-react'
 
@@ -21,7 +22,7 @@ function CardContent({ className = '', ...props }) { return <div className={`px-
 
 export default function App() {
   const [page, setPage] = useState('home')
-  const [yearly, setYearly] = useState(true)
+  const [yearly, setYearly] = useState(false);
   const showcaseRef = useRef(null)
 
   // auth + ui state
@@ -65,7 +66,7 @@ export default function App() {
   const tiers = [
     { name: "Basic", priceM: 5, priceY: 48, cta: "Get Basic", highlights: ["Core typing engine", "10 saved presets", "Email support"], popular: false },
     { name: "Pro", priceM: 15, priceY: 144, cta: "Go Pro", highlights: ["All Basic features", "Unlimited presets", "Stealth mode & hotkeys", "Priority support"], popular: true },
-    { name: "Team", priceM: 29, priceY: 276, cta: "Start Team", highlights: ["Seat management", "Central billing", "Shared presets"], popular: false },
+    { name: "Premium", priceM: 29, priceY: 276, cta: "Go Premium", highlights: ["All Pro features", "Priority support", "Advanced customization"], popular: false },
   ];
 
   useEffect(() => {
