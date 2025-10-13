@@ -136,11 +136,12 @@ export default function App() {
                     <svg width="16" height="16" viewBox="0 0 20 20" className="opacity-80"><path fill="currentColor" d="M5 7l5 6 5-6z"/></svg>
                   </button>
                   {menuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 rounded-xl border border-white/10 bg-[#0b0c10] shadow-[0_0_22px_rgba(99,102,241,.35)]">
-                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5" onClick={()=>{setPage('control'); setMenuOpen(false);}}>Control Panel</button>
-                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5" onClick={()=>{setPage('community'); setMenuOpen(false);}}>Community</button>
-                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5" onClick={()=>{setPage('settings'); setMenuOpen(false);}}>Settings</button>
-                      <button className="block w-full text-left px-4 py-3 text-sm text-red-300 hover:bg-white/5" onClick={()=>{setUser(null); setMenuOpen(false); showToast('Signed out');}}>Sign out</button>
+                    <div className="absolute right-0 mt-2 w-56 rounded-xl border border-white/10 bg-[#0b0c10] shadow-[0_0_22px_rgba(99,102,241,.35)] z-50">
+                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5 cursor-pointer" onClick={()=>{setPage('control'); setMenuOpen(false);}}>Control Panel</button>
+                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5 cursor-pointer" onClick={()=>{setPage('community'); setMenuOpen(false);}}>Community</button>
+                      <button className="block w-full text-left px-4 py-3 text-sm hover:bg-white/5 cursor-pointer" onClick={()=>{setPage('settings'); setMenuOpen(false);}}>Settings</button>
+                      <button className="block w-full text-left px-4 py-3 text-sm text-indigo-300 hover:bg-white/5 cursor-pointer font-medium" onClick={()=>{setPage('pricing'); setMenuOpen(false);}}>Upgrade to Pro</button>
+                      <button className="block w-full text-left px-4 py-3 text-sm text-red-300 hover:bg-white/5 cursor-pointer" onClick={()=>{setUser(null); setMenuOpen(false); showToast('Signed out');}}>Sign out</button>
                     </div>
                   )}
                 </div>
@@ -456,6 +457,149 @@ export default function App() {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* SETTINGS PAGE */}
+        {page === 'settings' && (
+          <section className="relative z-10 py-16">
+            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+              <h1 className="text-3xl font-bold">Settings</h1>
+              
+              {/* Account Settings */}
+              <div className="mt-8 space-y-6">
+                <Card className="bg-white/5 border-white/10">
+                  <CardHeader>
+                    <CardTitle>Account Details</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm text-white/70 mb-1">Email</label>
+                      <input 
+                        type="email" 
+                        value={user?.email || ''} 
+                        className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:border-indigo-400"
+                        readOnly
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/70 mb-1">Full Name</label>
+                      <input 
+                        type="text" 
+                        placeholder="Enter your full name"
+                        className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:border-indigo-400"
+                      />
+                    </div>
+                    <Button variant="outline" className="mt-2">Update Profile</Button>
+                  </CardContent>
+                </Card>
+
+                {/* Security */}
+                <Card className="bg-white/5 border-white/10">
+                  <CardHeader>
+                    <CardTitle>Security</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm text-white/70 mb-1">Current Password</label>
+                      <input 
+                        type="password" 
+                        className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:border-indigo-400"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/70 mb-1">New Password</label>
+                      <input 
+                        type="password" 
+                        className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:border-indigo-400"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/70 mb-1">Confirm New Password</label>
+                      <input 
+                        type="password" 
+                        className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:border-indigo-400"
+                      />
+                    </div>
+                    <Button variant="outline" className="mt-2">Change Password</Button>
+                  </CardContent>
+                </Card>
+
+                {/* Preferences */}
+                <Card className="bg-white/5 border-white/10">
+                  <CardHeader>
+                    <CardTitle>Preferences</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">Email Notifications</div>
+                        <div className="text-sm text-white/60">Receive updates about your account</div>
+                      </div>
+                      <button onClick={() => {}} className="relative inline-flex h-6 w-11 items-center rounded-full bg-white/10">
+                        <span className="inline-block h-4 w-4 transform rounded-full bg-white transition translate-x-1" />
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">Dark Mode</div>
+                        <div className="text-sm text-white/60">Toggle application theme</div>
+                      </div>
+                      <button onClick={() => {}} className="relative inline-flex h-6 w-11 items-center rounded-full bg-white/10">
+                        <span className="inline-block h-4 w-4 transform rounded-full bg-white transition translate-x-6" />
+                      </button>
+                    </div>
+                    <div className="pt-2">
+                      <label className="block text-sm text-white/70 mb-1">Language</label>
+                      <select className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:border-indigo-400">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                      </select>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Subscription */}
+                <Card className="bg-white/5 border-white/10">
+                  <CardHeader>
+                    <CardTitle>Subscription</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">Current Plan: <span className="text-indigo-400">Basic</span></div>
+                        <div className="text-sm text-white/60">You are currently on the Basic plan</div>
+                      </div>
+                      <Button onClick={() => setPage('pricing')}>Upgrade Plan</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Danger Zone */}
+                <Card className="bg-white/5 border-white/10">
+                  <CardHeader>
+                    <CardTitle className="text-red-400">Danger Zone</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-white/70 mb-4">Once you delete your account, there is no going back. Please be certain.</p>
+                    <Button 
+                      variant="outline" 
+                      className="border-red-500/50 text-red-400 hover:bg-red-950/30"
+                      onClick={() => {
+                        if(confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                          setUser(null);
+                          setPage('home');
+                          showToast('Account deleted successfully');
+                        }
+                      }}
+                    >
+                      Delete Account
+                    </Button>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </section>
