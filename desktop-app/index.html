@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ovara Search - AI-Enhanced Search</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <h1 class="logo">Ovara</h1>
+                <p class="subtitle">AI-Enhanced Search Engine</p>
+            </div>
+            <div class="header-actions">
+                <button class="icon-button" id="settingsBtn" title="Settings">⚙️</button>
+                <button class="icon-button" id="historyBtn" title="History">📚</button>
+            </div>
+        </header>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-container">
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="Search the web..."
+                    autofocus
+                />
+                <button id="searchBtn" class="search-button">
+                    <span id="searchIcon">🔍</span>
+                    <span id="searchText">Search</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <!-- AI Answer Card -->
+            <div id="aiAnswerCard" class="ai-card" style="display: none;">
+                <div class="ai-header">
+                    <span class="ai-title">🤖 AI Answer</span>
+                    <span id="aiConfidence" class="ai-badge"></span>
+                </div>
+                <div id="aiAnswerText" class="ai-answer"></div>
+                <div id="aiSources" class="ai-sources"></div>
+            </div>
+
+            <!-- Search Results -->
+            <div id="searchResults" class="search-results"></div>
+
+            <!-- Loading -->
+            <div id="loadingIndicator" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Searching...</p>
+            </div>
+
+            <!-- No Results -->
+            <div id="noResults" class="no-results" style="display: none;">
+                <p>No results found</p>
+                <p class="hint">Try different keywords or check your spelling</p>
+            </div>
+        </div>
+
+        <!-- Floating Chat Button (ChatGPT Style) -->
+        <button id="chatButton" class="chat-fab" style="display: none;" title="Open AI Chat">
+            💬
+        </button>
+
+        <!-- Chat Panel (Slides in from right) -->
+        <div id="chatPanel" class="chat-panel">
+            <div class="chat-header">
+                <h3>AI Assistant</h3>
+                <button id="closeChatBtn" class="close-button">✕</button>
+            </div>
+
+            <div id="chatMessages" class="chat-messages">
+                <div class="chat-welcome">
+                    <p>👋 Hi! I'm your AI assistant.</p>
+                    <p>Ask me anything about your search results!</p>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <textarea
+                    id="chatInput"
+                    class="chat-input"
+                    placeholder="Ask a follow-up question..."
+                    rows="1"
+                ></textarea>
+                <button id="sendChatBtn" class="send-button">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

@@ -1,0 +1,450 @@
+/* APPEND THIS TO content.css - Enhanced Styles for Grammar Check and AI Coach */
+
+/* ====================================
+   GRAMMAR CHECKER STYLES
+   ==================================== */
+
+.ovara-grammar-error {
+  border-bottom: 2px dotted #ef4444;
+  cursor: pointer;
+  position: relative;
+}
+
+.ovara-grammar-error:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+#ovara-grammar-popup {
+  position: fixed;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 999999;
+  min-width: 300px;
+  max-width: 400px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  animation: popup-slide-in 0.2s ease-out;
+}
+
+@keyframes popup-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ovara-grammar-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ovara-grammar-icon {
+  font-size: 18px;
+}
+
+.ovara-grammar-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ovara-grammar-body {
+  padding: 16px;
+}
+
+.ovara-grammar-original {
+  padding: 8px 12px;
+  background: #fee2e2;
+  border-left: 3px solid #ef4444;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #991b1b;
+  margin-bottom: 8px;
+}
+
+.ovara-grammar-arrow {
+  text-align: center;
+  color: #667eea;
+  font-size: 18px;
+  margin: 8px 0;
+}
+
+.ovara-grammar-corrected {
+  padding: 8px 12px;
+  background: #d1fae5;
+  border-left: 3px solid #10b981;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #065f46;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.ovara-grammar-explanation {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.5;
+  padding: 8px 12px;
+  background: #f3f4f6;
+  border-radius: 6px;
+}
+
+.ovara-grammar-actions {
+  padding: 12px 16px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 8px;
+}
+
+.ovara-grammar-btn {
+  flex: 1;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ovara-grammar-accept {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.ovara-grammar-accept:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.ovara-grammar-ignore {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.ovara-grammar-ignore:hover {
+  background: #e5e7eb;
+}
+
+#ovara-grammar-indicator {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 999998;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: ovara-slide-in 0.3s ease-out;
+}
+
+.ovara-indicator-icon {
+  font-size: 16px;
+}
+
+.ovara-indicator-text {
+  font-size: 12px;
+}
+
+/* ====================================
+   AI WRITING COACH SIDEBAR
+   ==================================== */
+
+#ovara-coach-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100vh;
+  background: white;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+  z-index: 999997;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+  animation: sidebar-slide-in 0.3s ease-out;
+}
+
+@keyframes sidebar-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.ovara-coach-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ovara-coach-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.ovara-coach-icon {
+  font-size: 20px;
+}
+
+.ovara-coach-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.ovara-coach-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.ovara-coach-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.ovara-coach-section {
+  margin-bottom: 24px;
+}
+
+.ovara-coach-section h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Writing Stats */
+#ovaraCoachStats {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.stat-label {
+  color: #6b7280;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #667eea;
+}
+
+/* Suggestions */
+#ovaraCoachSuggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coach-suggestion {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  background: #f0f9ff;
+  border-left: 3px solid #3b82f6;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #1e40af;
+  transition: all 0.2s;
+}
+
+.coach-suggestion:hover {
+  background: #dbeafe;
+  transform: translateX(2px);
+}
+
+.suggestion-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.suggestion-text {
+  flex: 1;
+}
+
+.coach-loading {
+  text-align: center;
+  padding: 20px;
+  color: #667eea;
+  font-weight: 500;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Quick Actions */
+.coach-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coach-action-btn {
+  width: 100%;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.coach-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.coach-action-btn:active {
+  transform: translateY(0);
+}
+
+/* Writing Tips */
+#ovaraCoachTips {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coach-tip {
+  padding: 10px 12px;
+  background: #fef3c7;
+  border-left: 3px solid #f59e0b;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #92400e;
+  line-height: 1.4;
+}
+
+/* Coach Action Result */
+.coach-result {
+  background: white;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.result-title {
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.result-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #374151;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.result-copy {
+  width: 100%;
+  padding: 8px 12px;
+  background: #10b981;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.result-copy:hover {
+  background: #059669;
+}
+
+/* ====================================
+   RESPONSIVE ADJUSTMENTS
+   ==================================== */
+
+@media (max-width: 768px) {
+  #ovara-coach-sidebar {
+    width: 100%;
+  }
+}
+
+/* ====================================
+   SCROLL BAR STYLING
+   ==================================== */
+
+.ovara-coach-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ovara-coach-body::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+.ovara-coach-body::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 3px;
+}
+
+.ovara-coach-body::-webkit-scrollbar-thumb:hover {
+  background: #764ba2;
+}
+
+/* ====================================
+   ANIMATIONS
+   ==================================== */
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

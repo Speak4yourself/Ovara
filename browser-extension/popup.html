@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ovara Extension</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 380px;
+      min-height: 500px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(to bottom, #0b0c10, #12141c, #0b0c10);
+      color: white;
+    }
+
+    /* Theme variables matching website */
+    :root {
+      --bg-primary: #0b0c10;
+      --bg-secondary: #12141c;
+      --bg-card: rgba(255, 255, 255, 0.05);
+      --bg-card-hover: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --border-primary: rgba(255, 255, 255, 0.1);
+      --border-secondary: rgba(255, 255, 255, 0.2);
+      --accent-primary: #6366f1;
+      --accent-hover: #818cf8;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    /* Login Screen */
+    .login-screen {
+      display: none;
+    }
+
+    .login-screen.active {
+      display: block;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 5px;
+      opacity: 0.9;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 14px;
+      outline: none;
+      transition: background 0.2s;
+    }
+
+    .input-group input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .input-group input:focus {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #6366f1;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .btn-primary:hover {
+      background: #818cf8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .error-message {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .error-message.active {
+      display: block;
+    }
+
+    /* Main Screen */
+    .main-screen {
+      display: none;
+    }
+
+    .main-screen.active {
+      display: block;
+    }
+
+    .user-info {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .user-info-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .user-email {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.3);
+      text-transform: uppercase;
+    }
+
+    .logout-btn {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .logout-btn:hover {
+      opacity: 1;
+    }
+
+    /* Features */
+    .features {
+      margin-bottom: 20px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .feature-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
+
+    .feature-card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .feature-icon {
+      font-size: 24px;
+      margin-right: 12px;
+    }
+
+    .feature-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .feature-description {
+      font-size: 12px;
+      opacity: 0.8;
+      line-height: 1.4;
+    }
+
+    /* Autotyper Panel */
+    .autotyper-panel {
+      display: none;
+    }
+
+    .autotyper-panel.active {
+      display: block;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 15px;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+      padding: 0;
+    }
+
+    .back-btn:hover {
+      opacity: 1;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      outline: none;
+      margin-bottom: 15px;
+    }
+
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .speed-control {
+      margin-bottom: 15px;
+    }
+
+    .speed-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.2);
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+      border: none;
+    }
+
+    .instruction {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .instruction-step {
+      margin-bottom: 8px;
+    }
+
+    .instruction-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .humanization-section {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      opacity: 0.9;
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      opacity: 0.7;
+      margin-top: 20px;
+    }
+
+    .footer a {
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Upgrade Card Highlight */
+    .feature-card-upgrade {
+      border: 2px solid rgba(255, 215, 0, 0.5);
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 193, 7, 0.15) 100%);
+    }
+
+    .feature-card-upgrade:hover {
+      border-color: rgba(255, 215, 0, 0.8);
+      transform: translateX(5px) scale(1.02);
+    }
+
+    /* Community Panel Styles */
+    .community-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .community-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .community-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .community-subtitle {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .community-stats {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 25px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 15px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .community-benefits {
+      margin-bottom: 25px;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .benefit-icon {
+      font-size: 16px;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+
+    .discord-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #5865F2;
+      margin-bottom: 15px;
+    }
+
+    .discord-btn:hover {
+      background: #4752C4;
+    }
+
+    .discord-icon {
+      display: flex;
+      align-items: center;
+    }
+
+    .community-footer {
+      text-align: center;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .community-link {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    /* Upgrade Panel Styles */
+    .upgrade-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .upgrade-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .upgrade-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .upgrade-subtitle {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .pricing-cards {
+      margin-bottom: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .pricing-card {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+    }
+
+    .pricing-card-premium {
+      border-color: rgba(255, 215, 0, 0.6);
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 193, 7, 0.15) 100%);
+    }
+
+    .plan-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .plan-badge-pro {
+      background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    }
+
+    .plan-badge-premium {
+      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+      color: #000;
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: -10px;
+      right: 20px;
+      background: #10b981;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .plan-price {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: baseline;
+    }
+
+    .price-currency {
+      font-size: 20px;
+      font-weight: 600;
+      margin-right: 2px;
+    }
+
+    .price-amount {
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .price-period {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-left: 4px;
+    }
+
+    .plan-features {
+      margin-bottom: 20px;
+    }
+
+    .plan-feature {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .feature-check {
+      color: #10b981;
+      font-weight: 700;
+      margin-right: 8px;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .upgrade-plan-btn {
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    .premium-btn {
+      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+      color: #000;
+      font-weight: 700;
+    }
+
+    .premium-btn:hover {
+      background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
+      transform: translateY(-2px);
+    }
+
+    .upgrade-footer {
+      text-align: center;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .upgrade-note {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-bottom: 10px;
+    }
+
+    .upgrade-link {
+      color: white;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    /* Scrollbar for pricing cards */
+    .pricing-cards::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .pricing-cards::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    .pricing-cards::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+
+    .pricing-cards::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Character Counter */
+    .character-counter {
+      text-align: right;
+      font-size: 11px;
+      opacity: 0.8;
+      margin-bottom: 15px;
+      margin-top: -10px;
+    }
+
+    .character-counter.warning {
+      color: #f59e0b;
+      font-weight: 600;
+    }
+
+    .character-counter.error {
+      color: #ef4444;
+      font-weight: 600;
+    }
+
+    /* Perfection Mode Toggle */
+    .perfection-mode-toggle {
+      margin-bottom: 15px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .toggle-label input[type="checkbox"] {
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .toggle-text {
+      flex: 1;
+    }
+
+    .premium-badge-inline {
+      font-size: 14px;
+      margin-left: 8px;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .premium-feature-btn {
+      position: relative;
+    }
+
+    .premium-star {
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    /* Disabled controls */
+    #humanizationControls.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Essay Analyzer Styles */
+    .analyzer-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .analyzer-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .analyzer-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .analyzer-subtitle {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .analyzer-loading {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .analyzer-loading p {
+      margin-top: 15px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .analyzer-results {
+      max-height: 450px;
+      overflow-y: auto;
+    }
+
+    .score-card {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .score-label {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+
+    .score-circle {
+      position: relative;
+      display: inline-block;
+    }
+
+    .score-number {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .category-scores {
+      margin-bottom: 25px;
+    }
+
+    .category-item {
+      margin-bottom: 15px;
+    }
+
+    .category-label {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+
+    .category-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .category-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+      transition: width 0.8s ease;
+    }
+
+    .category-value {
+      font-size: 12px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .suggestions-section {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .suggestions-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .suggestions-list {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .suggestion-item {
+      margin-bottom: 10px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .suggestion-item:before {
+      content: "•";
+      position: absolute;
+      left: 8px;
+      color: #10b981;
+      font-weight: 700;
+    }
+
+    .suggestion-item:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">Ovara</div>
+      <div class="tagline">AI Writing Assistant</div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <div>Loading...</div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+      <div id="errorMessage" class="error-message"></div>
+
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="your@email.com" />
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" />
+      </div>
+
+      <button class="btn btn-primary" id="loginBtn">Sign In</button>
+      <button class="btn btn-secondary" id="signupBtn">Create Account</button>
+
+      <div class="footer">
+        <a href="https://your-app-url.com" target="_blank">Open Web App</a>
+      </div>
+    </div>
+
+    <!-- Main Screen -->
+    <div id="mainScreen" class="main-screen">
+      <div class="user-info">
+        <div class="user-info-header">
+          <div>
+            <div class="user-email" id="userEmail"></div>
+            <span class="tier-badge" id="userTier">Free</span>
+          </div>
+          <a class="logout-btn" id="logoutBtn">Logout</a>
+        </div>
+      </div>
+
+      <div class="features">
+        <div class="feature-card" id="autotyperBtn">
+          <div class="feature-card-header">
+            <div class="feature-icon">⌨️</div>
+            <div class="feature-title">Auto-Typer</div>
+          </div>
+          <div class="feature-description">
+            Type your text automatically into any text field
+          </div>
+        </div>
+
+        <div class="feature-card" id="humanizerBtn">
+          <div class="feature-card-header">
+            <div class="feature-icon">✨</div>
+            <div class="feature-title">Humanize Text</div>
+          </div>
+          <div class="feature-description">
+            Make AI-generated text sound natural and human
+          </div>
+        </div>
+
+        <div class="feature-card" id="citationBtn">
+          <div class="feature-card-header">
+            <div class="feature-icon">📚</div>
+            <div class="feature-title">Generate Citation</div>
+          </div>
+          <div class="feature-description">
+            Create citations in APA, MLA, Chicago, and more
+          </div>
+        </div>
+
+        <div class="feature-card" id="detectorBtn">
+          <div class="feature-card-header">
+            <div class="feature-icon">🔍</div>
+            <div class="feature-title">AI Detector</div>
+          </div>
+          <div class="feature-description">
+            Detect if text was written by AI
+          </div>
+        </div>
+
+        <div class="feature-card" id="grammarBtn">
+          <div class="feature-card-header">
+            <div class="feature-icon">✏️</div>
+            <div class="feature-title">Grammar Check</div>
+          </div>
+          <div class="feature-description">
+            Real-time grammar checking like Grammarly
+          </div>
+        </div>
+
+        <div class="feature-card" id="assistantBtn">
+          <div class="feature-card-header">
+            <div class="feature-icon">🤖</div>
+            <div class="feature-title">Ovara Assistant</div>
+          </div>
+          <div class="feature-description">
+            AI co-pilot that sits beside you on any webpage
+          </div>
+        </div>
+
+        <div class="feature-card" id="savedEssaysBtn">
+          <div class="feature-card-header">
+            <div class="feature-icon">💾</div>
+            <div class="feature-title">Saved Essays</div>
+          </div>
+          <div class="feature-description">
+            Access your saved essays from the web app
+          </div>
+        </div>
+
+        <div class="feature-card" id="communityBtn">
+          <div class="feature-card-header">
+            <div class="feature-icon">💬</div>
+            <div class="feature-title">Community</div>
+          </div>
+          <div class="feature-description">
+            Join our Discord server and connect with users
+          </div>
+        </div>
+
+        <div class="feature-card" id="settingsBtn">
+          <div class="feature-card-header">
+            <div class="feature-icon">⚙️</div>
+            <div class="feature-title">Settings</div>
+          </div>
+          <div class="feature-description">
+            Customize theme, position, and size
+          </div>
+        </div>
+
+        <div class="feature-card feature-card-upgrade" id="upgradeBtn">
+          <div class="feature-card-header">
+            <div class="feature-icon">⭐</div>
+            <div class="feature-title">Upgrade to Premium</div>
+          </div>
+          <div class="feature-description">
+            Unlock unlimited features and advanced AI tools
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <a href="https://your-app-url.com/dashboard" target="_blank">Open Dashboard</a>
+      </div>
+    </div>
+
+    <!-- Autotyper Panel -->
+    <div id="autotyperPanel" class="autotyper-panel">
+      <button class="back-btn" id="backBtn">← Back</button>
+
+      <div class="instruction">
+        <div class="instruction-step"><strong>1.</strong> Enter or paste your text below</div>
+        <div class="instruction-step"><strong>2.</strong> Adjust typing speed</div>
+        <div class="instruction-step"><strong>3.</strong> Click "Start Auto-Type"</div>
+        <div class="instruction-step"><strong>4.</strong> Click on any text field to begin</div>
+      </div>
+
+      <textarea id="autotypeText" placeholder="Enter text to auto-type..."></textarea>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; margin-top: -10px;">
+        <button class="btn btn-secondary" id="loadEssayBtn" style="padding: 8px 12px; font-size: 12px; width: auto; margin: 0;">
+          📂 Load Saved Essay
+        </button>
+        <div class="character-counter" id="characterCounter" style="margin: 0;">
+          <span id="charCount">0</span> characters
+          <span id="charLimit" style="opacity: 0.7;"></span>
+        </div>
+      </div>
+
+      <div class="speed-control">
+        <div class="speed-label">
+          <span>Typing Speed</span>
+          <span id="speedValue">50 WPM</span>
+        </div>
+        <input type="range" id="speedSlider" min="10" max="120" value="50" />
+      </div>
+
+      <div class="humanization-section">
+        <div class="section-title">🤖 Human-like Typing</div>
+
+        <div class="perfection-mode-toggle">
+          <label class="toggle-label">
+            <input type="checkbox" id="perfectionMode" />
+            <span class="toggle-text">Perfect Typing (No Mistakes)</span>
+            <span class="premium-badge-inline" id="perfectionBadge" style="display: none;">⭐</span>
+          </label>
+        </div>
+
+        <div id="humanizationControls">
+          <div class="speed-control">
+            <div class="speed-label">
+              <span>Speed Variation</span>
+              <span id="variationValue">30%</span>
+            </div>
+            <input type="range" id="variationSlider" min="0" max="50" value="30" />
+          </div>
+
+          <div class="speed-control">
+            <div class="speed-label">
+              <span>Mistake Chance</span>
+              <span id="mistakeValue">5%</span>
+            </div>
+            <input type="range" id="mistakeSlider" min="0" max="20" value="5" />
+          </div>
+
+          <div class="speed-control">
+            <div class="speed-label">
+              <span>Pause Frequency</span>
+              <span id="pauseValue">15%</span>
+            </div>
+            <input type="range" id="pauseSlider" min="0" max="50" value="15" />
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-secondary" id="saveEssayBtn">💾 Save Essay</button>
+        <button class="btn btn-secondary premium-feature-btn" id="analyzeEssayBtn">
+          📊 Analyze Essay <span class="premium-star">⭐</span>
+        </button>
+      </div>
+
+      <button class="btn btn-primary" id="startAutotypeBtn">Start Auto-Type</button>
+      <button class="btn btn-secondary" id="stopAutotypeBtn" style="display: none;">Stop</button>
+      <button class="btn btn-secondary" id="pauseAutotypeBtn" style="display: none;">Pause</button>
+    </div>
+
+    <!-- Saved Essays Panel -->
+    <div id="savedEssaysPanel" class="autotyper-panel">
+      <button class="back-btn" id="essaysBackBtn">← Back</button>
+
+      <div class="instruction">
+        Click an essay to load it into the auto-typer
+      </div>
+
+      <div id="essaysList" style="max-height: 350px; overflow-y: auto;">
+        <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.7);">
+          Loading essays...
+        </div>
+      </div>
+    </div>
+
+    <!-- Community Panel -->
+    <div id="communityPanel" class="autotyper-panel">
+      <button class="back-btn" id="communityBackBtn">← Back</button>
+
+      <div class="community-header">
+        <div class="community-icon">💬</div>
+        <h2 class="community-title">Join Our Community</h2>
+        <p class="community-subtitle">Connect with thousands of Ovara users</p>
+      </div>
+
+      <div class="community-stats">
+        <div class="stat-item">
+          <div class="stat-value">15,000+</div>
+          <div class="stat-label">Members</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">24/7</div>
+          <div class="stat-label">Support</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">Daily</div>
+          <div class="stat-label">Tips & Tricks</div>
+        </div>
+      </div>
+
+      <div class="community-benefits">
+        <div class="benefit-item">
+          <span class="benefit-icon">✅</span>
+          <span class="benefit-text">Get help from experienced users</span>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">✅</span>
+          <span class="benefit-text">Share writing tips and techniques</span>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">✅</span>
+          <span class="benefit-text">Early access to new features</span>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">✅</span>
+          <span class="benefit-text">Weekly writing challenges & contests</span>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">✅</span>
+          <span class="benefit-text">Direct feedback from our team</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary discord-btn" id="joinDiscordBtn">
+        <span class="discord-icon">
+          <svg width="20" height="20" viewBox="0 0 71 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.471 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6202 41.8354 49.6202 53.3179 44.3151C53.3935 44.2785 53.4831 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978ZM23.7259 37.3253C20.2276 37.3253 17.3451 34.1136 17.3451 30.1693C17.3451 26.225 20.1717 23.0133 23.7259 23.0133C27.308 23.0133 30.1626 26.2532 30.1066 30.1693C30.1066 34.1136 27.28 37.3253 23.7259 37.3253ZM47.3178 37.3253C43.8196 37.3253 40.9371 34.1136 40.9371 30.1693C40.9371 26.225 43.7636 23.0133 47.3178 23.0133C50.9 23.0133 53.7545 26.2532 53.6986 30.1693C53.6986 34.1136 50.9 37.3253 47.3178 37.3253Z" fill="white"/>
+          </svg>
+        </span>
+        Join Our Discord Server
+      </button>
+
+      <div class="community-footer">
+        <a href="https://discord.gg/ovara" target="_blank" class="community-link">discord.gg/ovara</a>
+      </div>
+    </div>
+
+    <!-- Essay Analyzer Panel -->
+    <div id="analyzerPanel" class="autotyper-panel">
+      <button class="back-btn" id="analyzerBackBtn">← Back</button>
+
+      <div class="analyzer-header">
+        <div class="analyzer-icon">📊</div>
+        <h2 class="analyzer-title">Essay Analysis</h2>
+        <p class="analyzer-subtitle">AI-powered structure and quality assessment</p>
+      </div>
+
+      <div id="analyzerLoading" class="analyzer-loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Analyzing your essay...</p>
+      </div>
+
+      <div id="analyzerResults" class="analyzer-results">
+        <!-- Overall Score -->
+        <div class="score-card">
+          <div class="score-label">Overall Score</div>
+          <div class="score-circle">
+            <svg width="120" height="120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="10"/>
+              <circle id="scoreCircle" cx="60" cy="60" r="50" fill="none" stroke="#10b981" stroke-width="10"
+                      stroke-dasharray="314" stroke-dashoffset="314" transform="rotate(-90 60 60)"/>
+            </svg>
+            <div class="score-number" id="overallScore">0</div>
+          </div>
+        </div>
+
+        <!-- Category Scores -->
+        <div class="category-scores">
+          <div class="category-item">
+            <div class="category-label">Structure</div>
+            <div class="category-bar">
+              <div class="category-fill" id="structureBar" style="width: 0%"></div>
+            </div>
+            <div class="category-value" id="structureScore">0%</div>
+          </div>
+
+          <div class="category-item">
+            <div class="category-label">Grammar</div>
+            <div class="category-bar">
+              <div class="category-fill" id="grammarBar" style="width: 0%"></div>
+            </div>
+            <div class="category-value" id="grammarScore">0%</div>
+          </div>
+
+          <div class="category-item">
+            <div class="category-label">Readability</div>
+            <div class="category-bar">
+              <div class="category-fill" id="readabilityBar" style="width: 0%"></div>
+            </div>
+            <div class="category-value" id="readabilityScore">0%</div>
+          </div>
+
+          <div class="category-item">
+            <div class="category-label">Coherence</div>
+            <div class="category-bar">
+              <div class="category-fill" id="coherenceBar" style="width: 0%"></div>
+            </div>
+            <div class="category-value" id="coherenceScore">0%</div>
+          </div>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="suggestions-section">
+          <div class="suggestions-title">💡 Suggestions for Improvement</div>
+          <div id="suggestionsList" class="suggestions-list">
+            <!-- Suggestions will be added here dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upgrade Panel -->
+    <div id="upgradePanel" class="autotyper-panel">
+      <button class="back-btn" id="upgradeBackBtn">← Back</button>
+
+      <div class="upgrade-header">
+        <div class="upgrade-icon">⭐</div>
+        <h2 class="upgrade-title">Upgrade Your Plan</h2>
+        <p class="upgrade-subtitle">Unlock the full power of Ovara AI</p>
+      </div>
+
+      <div class="pricing-cards">
+        <!-- Pro Plan -->
+        <div class="pricing-card" id="proCard">
+          <div class="plan-badge plan-badge-pro">PRO</div>
+          <div class="plan-price">
+            <span class="price-currency">$</span>
+            <span class="price-amount">14.99</span>
+            <span class="price-period">/month</span>
+          </div>
+          <div class="plan-features">
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span>Auto-typer (10,000 chars/session)</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span>Human-like typing with mistakes</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span>Real-time grammar checking</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span>AI Writing Coach sidebar</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span>Text humanizer</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span>Citation generator</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span>Saved essays access</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span>Priority support</span>
+            </div>
+          </div>
+          <button class="btn btn-primary upgrade-plan-btn" data-tier="pro">Upgrade to Pro</button>
+        </div>
+
+        <!-- Premium Plan -->
+        <div class="pricing-card pricing-card-premium" id="premiumCard">
+          <div class="plan-badge plan-badge-premium">PREMIUM</div>
+          <div class="popular-badge">Most Popular</div>
+          <div class="plan-price">
+            <span class="price-currency">$</span>
+            <span class="price-amount">29.99</span>
+            <span class="price-period">/month</span>
+          </div>
+          <div class="plan-features">
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span><strong>Everything in Pro, plus:</strong></span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">⭐</span>
+              <span><strong>Unlimited auto-typing</strong> - No character limits</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">⭐</span>
+              <span><strong>AI Detection Tool</strong> - Detect AI-written text</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">⭐</span>
+              <span><strong>Advanced humanization</strong> - Bypass AI detectors</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">⭐</span>
+              <span><strong>GPT-4 powered AI</strong> - Highest quality writing</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">⭐</span>
+              <span><strong>Priority processing</strong> - Faster AI responses</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">⭐</span>
+              <span><strong>Custom typing profiles</strong> - Save favorite settings</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span>24/7 Priority support</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span>Early access to new features</span>
+            </div>
+            <div class="plan-feature">
+              <span class="feature-check">✓</span>
+              <span>Discord VIP role</span>
+            </div>
+          </div>
+          <button class="btn btn-primary upgrade-plan-btn premium-btn" data-tier="premium">Upgrade to Premium</button>
+        </div>
+      </div>
+
+      <div class="upgrade-footer">
+        <p class="upgrade-note">All plans include a 7-day money-back guarantee</p>
+        <a href="https://your-app-url.com/pricing" target="_blank" class="upgrade-link">Compare all features →</a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .essay-item {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .essay-item:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateX(5px);
+    }
+
+    .essay-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .essay-meta {
+      font-size: 11px;
+      opacity: 0.7;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .essay-preview {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 6px;
+      line-height: 1.4;
+      max-height: 40px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+
+  <script src="popup.js"></script>
+</body>
+</html>

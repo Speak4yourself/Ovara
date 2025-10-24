@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ovara Assistant - Privacy Policy & Permissions</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #0b0c10 0%, #1f2937 100%);
+      color: #ffffff;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 2px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .header h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 16px;
+    }
+
+    .last-updated {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #6366f1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-icon {
+      font-size: 28px;
+    }
+
+    .section-content {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .section-content p {
+      margin-bottom: 16px;
+    }
+
+    .permission-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+    }
+
+    .permission-card:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: #6366f1;
+      transform: translateX(4px);
+    }
+
+    .permission-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .permission-icon {
+      font-size: 24px;
+    }
+
+    .permission-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .permission-required {
+      margin-left: auto;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .required {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .optional {
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .permission-description {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .permission-details {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .permission-details strong {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    ul {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .highlight-box {
+      background: rgba(99, 102, 241, 0.1);
+      border-left: 4px solid #6366f1;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .highlight-box strong {
+      color: #a5b4fc;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .data-table th {
+      background: rgba(99, 102, 241, 0.2);
+      font-weight: 600;
+      color: #a5b4fc;
+    }
+
+    .data-table td {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .footer {
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 2px solid rgba(99, 102, 241, 0.3);
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      color: #6366f1;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover {
+      color: #818cf8;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.2s;
+      margin-bottom: 30px;
+    }
+
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="settings.html" class="back-button">← Back to Settings</a>
+
+    <div class="header">
+      <h1>🔐 Privacy Policy & Permissions</h1>
+      <p>Transparency and control over your data</p>
+    </div>
+
+    <div class="last-updated">Last Updated: January 2025</div>
+
+    <!-- Introduction -->
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">👋</span>
+        Introduction
+      </div>
+      <div class="section-content">
+        <p>
+          At Ovara, we believe in complete transparency about what data we access, why we need it,
+          and how we use it. This policy explains every permission the Ovara Assistant requests and
+          gives you full control over which features to enable.
+        </p>
+        <div class="highlight-box">
+          <strong>🛡️ Our Core Principles:</strong>
+          <ul>
+            <li><strong>No data selling</strong> - We never sell your data to third parties</li>
+            <li><strong>Minimal collection</strong> - We only collect what's necessary for features</li>
+            <li><strong>Your control</strong> - Every permission is optional and can be revoked</li>
+            <li><strong>Local first</strong> - Most data stays on your device</li>
+            <li><strong>Encryption</strong> - Data in transit is encrypted</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Permissions Required -->
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">🔑</span>
+        Permissions Explained
+      </div>
+      <div class="section-content">
+        <p>Below are all permissions the Ovara Assistant may request. Each permission enables specific features.</p>
+
+        <!-- Basic Permissions -->
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-icon">🌐</span>
+            <span class="permission-name">Active Tab Access</span>
+            <span class="permission-required required">Required</span>
+          </div>
+          <div class="permission-description">
+            Access to read the content of the webpage you're currently viewing.
+          </div>
+          <div class="permission-details">
+            <strong>Why we need this:</strong> To provide page-aware assistance, detect page type, extract content for summarization, and understand context for relevant suggestions.
+            <br><br>
+            <strong>What we access:</strong> Page title, URL, visible text content, and page structure.
+            <br><br>
+            <strong>What we DON'T access:</strong> Passwords, payment information, or data from other tabs.
+          </div>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-icon">💾</span>
+            <span class="permission-name">Local Storage</span>
+            <span class="permission-required required">Required</span>
+          </div>
+          <div class="permission-description">
+            Store your settings, preferences, and session data locally on your device.
+          </div>
+          <div class="permission-details">
+            <strong>Why we need this:</strong> Save your theme preferences, position settings, usage statistics, and authentication tokens.
+            <br><br>
+            <strong>What we store:</strong> Settings, user tier, request counts, and login sessions.
+            <br><br>
+            <strong>Location:</strong> All data stored locally in Chrome's secure storage (not on our servers).
+          </div>
+        </div>
+
+        <!-- Advanced Features Permissions -->
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-icon">📋</span>
+            <span class="permission-name">Clipboard Access</span>
+            <span class="permission-required optional">Optional</span>
+          </div>
+          <div class="permission-description">
+            Read text you copy to provide instant assistance with copied content.
+          </div>
+          <div class="permission-details">
+            <strong>Why we need this:</strong> Enable "Clipboard Monitor" feature - shows notification when you copy text and offers instant actions (rewrite, summarize, translate).
+            <br><br>
+            <strong>What we access:</strong> Only text content from your clipboard, only when Ovara Assistant is active.
+            <br><br>
+            <strong>Control:</strong> Can be disabled in Settings → Privacy → Clipboard Monitor.
+          </div>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-icon">⌨️</span>
+            <span class="permission-name">Text Input Monitoring</span>
+            <span class="permission-required optional">Optional</span>
+          </div>
+          <div class="permission-description">
+            Monitor what you type to provide auto-suggestions and writing assistance.
+          </div>
+          <div class="permission-details">
+            <strong>Why we need this:</strong> Enable "Auto-Suggestions" feature - provides real-time writing suggestions as you type, like GitHub Copilot for writing.
+            <br><br>
+            <strong>What we access:</strong> Text in active input fields (only when you're typing and assistant is enabled).
+            <br><br>
+            <strong>Privacy safeguards:</strong>
+            <ul>
+              <li>Never monitors password fields</li>
+              <li>Never monitors payment/credit card fields</li>
+              <li>500ms delay after you stop typing before analyzing</li>
+              <li>Only last sentence sent for suggestions</li>
+            </ul>
+            <strong>Control:</strong> Can be disabled in Settings → Privacy → Auto-Suggestions.
+          </div>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-icon">📧</span>
+            <span class="permission-name">Email Content Access (Gmail/Outlook)</span>
+            <span class="permission-required optional">Optional</span>
+          </div>
+          <div class="permission-description">
+            Read email threads to provide context-aware email assistance.
+          </div>
+          <div class="permission-details">
+            <strong>Why we need this:</strong> Enable "Email Thread Analyzer" - summarizes long email chains and helps draft context-aware responses.
+            <br><br>
+            <strong>What we access:</strong> Email content in active thread only, when you click "Analyze Thread" button.
+            <br><br>
+            <strong>What we DON'T access:</strong> Other emails, contacts, or email metadata without explicit action.
+            <br><br>
+            <strong>Control:</strong> Can be disabled in Settings → Privacy → Email Analysis.
+          </div>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-icon">🎤</span>
+            <span class="permission-name">Microphone Access</span>
+            <span class="permission-required optional">Optional</span>
+          </div>
+          <div class="permission-description">
+            Use voice input for hands-free prompts and dictation.
+          </div>
+          <div class="permission-details">
+            <strong>Why we need this:</strong> Enable "Voice Input" feature - speak your prompts instead of typing them.
+            <br><br>
+            <strong>What we access:</strong> Audio from microphone only when you click the microphone button.
+            <br><br>
+            <strong>Privacy:</strong> Uses browser's built-in Web Speech API - no audio sent to Ovara servers, processed locally by browser.
+            <br><br>
+            <strong>Control:</strong> Browser will prompt for permission each time, can be disabled in Settings → Privacy → Voice Input.
+          </div>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-icon">🖱️</span>
+            <span class="permission-name">Context Menu (Right-Click)</span>
+            <span class="permission-required optional">Optional</span>
+          </div>
+          <div class="permission-description">
+            Add "Ask Ovara" option to right-click menu on selected text.
+          </div>
+          <div class="permission-details">
+            <strong>Why we need this:</strong> Enable quick access - right-click any text → "Ask Ovara" → instant assistance.
+            <br><br>
+            <strong>What we access:</strong> Only text you explicitly right-click on.
+            <br><br>
+            <strong>Control:</strong> Can be disabled in Settings → Privacy → Context Menu.
+          </div>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-icon">🎥</span>
+            <span class="permission-name">Meeting Tab Detection</span>
+            <span class="permission-required optional">Optional</span>
+          </div>
+          <div class="permission-description">
+            Detect when you're in Google Meet or Zoom to offer meeting assistance.
+          </div>
+          <div class="permission-details">
+            <strong>Why we need this:</strong> Enable "Meeting Notes Assistant" - automatically offers to take notes and extract action items from meetings.
+            <br><br>
+            <strong>What we access:</strong> Only tab URL to detect meeting platforms (meet.google.com, zoom.us). We do NOT access meeting audio or video.
+            <br><br>
+            <strong>Control:</strong> Can be disabled in Settings → Privacy → Meeting Assistant.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data We Collect -->
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">📊</span>
+        Data We Collect & Store
+      </div>
+      <div class="section-content">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Data Type</th>
+              <th>Purpose</th>
+              <th>Storage Location</th>
+              <th>Retention</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Account Email</td>
+              <td>Authentication, account management</td>
+              <td>Supabase (encrypted)</td>
+              <td>Until account deletion</td>
+            </tr>
+            <tr>
+              <td>Usage Statistics</td>
+              <td>Track daily limits, prevent abuse</td>
+              <td>Supabase (encrypted)</td>
+              <td>30 days rolling</td>
+            </tr>
+            <tr>
+              <td>Settings & Preferences</td>
+              <td>Personalization</td>
+              <td>Chrome Local Storage</td>
+              <td>Until you clear data</td>
+            </tr>
+            <tr>
+              <td>Chat History</td>
+              <td>Access previous conversations</td>
+              <td>Chrome Local Storage (optional cloud sync)</td>
+              <td>Until you delete</td>
+            </tr>
+            <tr>
+              <td>Saved Templates</td>
+              <td>Quick access to favorites</td>
+              <td>Chrome Local Storage</td>
+              <td>Until you delete</td>
+            </tr>
+            <tr>
+              <td>AI Prompts & Responses</td>
+              <td>Provide AI assistance</td>
+              <td>OpenAI (encrypted in transit)</td>
+              <td>30 days (OpenAI policy)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="highlight-box">
+          <strong>🔒 Data Security:</strong>
+          All data transmitted between your browser and our servers is encrypted using TLS 1.3.
+          We use Supabase for authentication and database, which is SOC 2 Type II certified and GDPR compliant.
+        </div>
+      </div>
+    </div>
+
+    <!-- What We DON'T Do -->
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">🚫</span>
+        What We DON'T Do
+      </div>
+      <div class="section-content">
+        <ul>
+          <li><strong>We DON'T sell your data</strong> - Ever. To anyone. For any reason.</li>
+          <li><strong>We DON'T track you across websites</strong> - No analytics, no fingerprinting, no tracking pixels.</li>
+          <li><strong>We DON'T access password fields</strong> - Automatically excluded from all monitoring.</li>
+          <li><strong>We DON'T access payment information</strong> - Credit card fields are blacklisted.</li>
+          <li><strong>We DON'T read your emails</strong> - Unless you explicitly click "Analyze Thread".</li>
+          <li><strong>We DON'T record audio</strong> - Voice input uses browser API, no recording.</li>
+          <li><strong>We DON'T store page content</strong> - Content sent to AI is not permanently stored.</li>
+          <li><strong>We DON'T share with third parties</strong> - Except OpenAI for AI processing (see below).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Third Party Services -->
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">🤝</span>
+        Third-Party Services
+      </div>
+      <div class="section-content">
+        <p>Ovara uses the following third-party services:</p>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-icon">🤖</span>
+            <span class="permission-name">OpenAI (ChatGPT API)</span>
+          </div>
+          <div class="permission-description">
+            Powers the AI assistance features.
+          </div>
+          <div class="permission-details">
+            <strong>What we share:</strong> Your prompts and context (selected text, page content when requested).
+            <br><br>
+            <strong>Their policy:</strong> OpenAI stores prompts for 30 days for abuse prevention, then deletes. They do not train models on API data.
+            <br><br>
+            <strong>Privacy:</strong> <a href="https://openai.com/privacy" target="_blank" style="color: #6366f1;">OpenAI Privacy Policy</a>
+          </div>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-icon">🔐</span>
+            <span class="permission-name">Supabase</span>
+          </div>
+          <div class="permission-description">
+            Authentication and database infrastructure.
+          </div>
+          <div class="permission-details">
+            <strong>What we share:</strong> Your email, authentication tokens, usage statistics.
+            <br><br>
+            <strong>Security:</strong> SOC 2 Type II certified, GDPR compliant, data encrypted at rest and in transit.
+            <br><br>
+            <strong>Privacy:</strong> <a href="https://supabase.com/privacy" target="_blank" style="color: #6366f1;">Supabase Privacy Policy</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Your Rights -->
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">⚖️</span>
+        Your Rights (GDPR & CCPA)
+      </div>
+      <div class="section-content">
+        <p>You have the following rights regarding your data:</p>
+        <ul>
+          <li><strong>Right to Access</strong> - Request a copy of all data we have about you</li>
+          <li><strong>Right to Deletion</strong> - Request permanent deletion of your account and data</li>
+          <li><strong>Right to Correction</strong> - Update or correct your information</li>
+          <li><strong>Right to Portability</strong> - Export your data in a machine-readable format</li>
+          <li><strong>Right to Opt-Out</strong> - Disable any optional features at any time</li>
+          <li><strong>Right to Object</strong> - Object to data processing for specific purposes</li>
+        </ul>
+
+        <div class="highlight-box">
+          <strong>📧 Exercise Your Rights:</strong>
+          Contact us at <a href="mailto:privacy@ovara.app" style="color: #a5b4fc;">privacy@ovara.app</a> to exercise any of these rights.
+          We'll respond within 30 days.
+        </div>
+      </div>
+    </div>
+
+    <!-- Managing Permissions -->
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">⚙️</span>
+        Managing Your Permissions
+      </div>
+      <div class="section-content">
+        <p>You have full control over which features to enable:</p>
+
+        <p><strong>In Extension Settings:</strong></p>
+        <ol>
+          <li>Click the Ovara extension icon</li>
+          <li>Click "Settings"</li>
+          <li>Go to "Privacy & Permissions" tab</li>
+          <li>Toggle individual features on/off</li>
+        </ol>
+
+        <p><strong>In Browser Settings:</strong></p>
+        <ol>
+          <li>Chrome → Settings → Privacy and Security → Site Settings</li>
+          <li>Find Ovara extension</li>
+          <li>Revoke specific permissions (clipboard, microphone, etc.)</li>
+        </ol>
+
+        <div class="highlight-box">
+          <strong>💡 Tip:</strong>
+          Disabling a permission will disable related features but won't affect other functionality.
+          You can re-enable at any time.
+        </div>
+      </div>
+    </div>
+
+    <!-- Changes to Policy -->
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">📝</span>
+        Changes to This Policy
+      </div>
+      <div class="section-content">
+        <p>
+          We may update this privacy policy as we add new features or improve existing ones.
+          When we make changes:
+        </p>
+        <ul>
+          <li>We'll notify you via email and in-app notification</li>
+          <li>We'll highlight what changed</li>
+          <li>You'll have the option to review and accept changes</li>
+          <li>If you don't accept, affected features will be disabled</li>
+        </ul>
+        <p>
+          You can always view the current version at
+          <a href="chrome-extension://[extension-id]/privacy-policy.html" style="color: #6366f1;">this page</a>.
+        </p>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">📬</span>
+        Contact Us
+      </div>
+      <div class="section-content">
+        <p>Questions about privacy or permissions?</p>
+        <ul>
+          <li><strong>Privacy Questions:</strong> <a href="mailto:privacy@ovara.app" style="color: #6366f1;">privacy@ovara.app</a></li>
+          <li><strong>General Support:</strong> <a href="mailto:support@ovara.app" style="color: #6366f1;">support@ovara.app</a></li>
+          <li><strong>Discord Community:</strong> <a href="https://discord.gg/ovara" target="_blank" style="color: #6366f1;">discord.gg/ovara</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 10px;">
+        Ovara Assistant - Your Privacy-First AI Co-Pilot
+      </p>
+      <div class="footer-links">
+        <a href="settings.html" class="footer-link">Settings</a>
+        <a href="https://ovara.app/terms" target="_blank" class="footer-link">Terms of Service</a>
+        <a href="https://ovara.app" target="_blank" class="footer-link">Website</a>
+        <a href="mailto:privacy@ovara.app" class="footer-link">Contact Privacy Team</a>
+      </div>
+      <p style="color: rgba(255, 255, 255, 0.5); margin-top: 20px; font-size: 13px;">
+        © 2025 Ovara. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

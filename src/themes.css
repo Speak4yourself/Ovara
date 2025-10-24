@@ -1,0 +1,234 @@
+/* Dark theme (default) - no changes needed, this is just CSS variables */
+.dark {
+  --bg-primary: #0b0c10;
+  --bg-secondary: #12141c;
+  --bg-card: rgba(255, 255, 255, 0.05);
+  --bg-card-hover: rgba(255, 255, 255, 0.1);
+
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.2);
+
+  --accent-primary: #6366f1;
+  --accent-hover: #818cf8;
+}
+
+/* Light theme */
+.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f3f4f6;
+
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+
+  --border-primary: #e5e7eb;
+  --border-secondary: #d1d5db;
+
+  --accent-primary: #4f46e5;
+  --accent-hover: #6366f1;
+}
+
+/* Apply theme variables */
+.light body {
+  background: linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary), var(--bg-primary));
+  color: var(--text-primary);
+}
+
+/* Light theme specific overrides */
+.light .bg-gradient-to-b {
+  background: linear-gradient(to bottom, #ffffff, #f9fafb, #ffffff) !important;
+}
+
+.light .bg-white\/5 {
+  background: #f9fafb !important;
+}
+
+.light .bg-white\/10 {
+  background: #f3f4f6 !important;
+  border-color: #e5e7eb !important;
+}
+
+.light .bg-white\/20 {
+  background: #e5e7eb !important;
+}
+
+.light .bg-black\/40 {
+  background: #ffffff !important;
+  border-color: #d1d5db !important;
+}
+
+.light .text-white {
+  color: #111827 !important;
+}
+
+.light .text-white\/90 {
+  color: #1f2937 !important;
+}
+
+.light .text-white\/80 {
+  color: #374151 !important;
+}
+
+.light .text-white\/70 {
+  color: #4b5563 !important;
+}
+
+.light .text-white\/60 {
+  color: #6b7280 !important;
+}
+
+.light .text-white\/50 {
+  color: #9ca3af !important;
+}
+
+.light .border-white\/10 {
+  border-color: #e5e7eb !important;
+}
+
+.light .border-white\/20 {
+  border-color: #d1d5db !important;
+}
+
+.light .border-white\/15 {
+  border-color: #e5e7eb !important;
+}
+
+.light .hover\:bg-white\/5:hover {
+  background: #f9fafb !important;
+}
+
+.light .hover\:bg-white\/10:hover {
+  background: #f3f4f6 !important;
+}
+
+.light .hover\:text-white:hover {
+  color: #111827 !important;
+}
+
+/* Light theme button adjustments */
+.light .bg-indigo-500 {
+  background: #4f46e5 !important;
+}
+
+.light .bg-indigo-400,
+.light .hover\:bg-indigo-400:hover {
+  background: #6366f1 !important;
+}
+
+.light .text-indigo-300 {
+  color: #6366f1 !important;
+}
+
+.light .text-indigo-200 {
+  color: #818cf8 !important;
+}
+
+.light .text-indigo-100 {
+  color: #a5b4fc !important;
+}
+
+/* Light theme card styles */
+.light .shadow-\[0_0_35px_rgba\(99\,102\,241\,\.35\)\] {
+  box-shadow: 0 0 20px rgba(79, 70, 229, 0.15) !important;
+}
+
+.light .shadow-\[0_0_55px_rgba\(99\,102\,241\,\.55\)\] {
+  box-shadow: 0 0 35px rgba(79, 70, 229, 0.25) !important;
+}
+
+.light .shadow-\[0_0_30px_rgba\(99\,102\,241\,\.5\)\] {
+  box-shadow: 0 0 20px rgba(79, 70, 229, 0.2) !important;
+  background: #ffffff !important;
+}
+
+/* Light theme glow effects */
+.light .pulse-glow {
+  animation: lightPulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes lightPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(79, 70, 229, 0.15); }
+  50% { box-shadow: 0 0 30px rgba(79, 70, 229, 0.25); }
+}
+
+/* Light theme neon text effect */
+.light .neon-text {
+  text-shadow: 0 0 5px rgba(79, 70, 229, 0.3),
+               0 0 10px rgba(79, 70, 229, 0.2),
+               0 0 15px rgba(79, 70, 229, 0.1);
+  animation: lightNeonFlicker 8s infinite;
+}
+
+@keyframes lightNeonFlicker {
+  0%, 100% { opacity: 1; }
+  35% { opacity: 0.95; }
+  37% { opacity: 0.98; }
+  39% { opacity: 0.95; }
+  42% { opacity: 1; }
+  78% { opacity: 0.98; }
+  80% { opacity: 1; }
+}
+
+/* Light theme dropdown menu */
+.light .fixed[style*="backdrop-filter"] {
+  background: #ffffff !important;
+  border-color: #e5e7eb !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Light theme toast */
+.light .fixed.bottom-4.right-4 {
+  background: #ffffff !important;
+  border-color: #e5e7eb !important;
+  color: #111827 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Light theme input fields */
+.light input[type="text"],
+.light input[type="email"],
+.light input[type="password"],
+.light select,
+.light textarea {
+  background: #ffffff !important;
+  border-color: #d1d5db !important;
+  color: #111827 !important;
+}
+
+.light input[type="text"]:focus,
+.light input[type="email"]:focus,
+.light input[type="password"]:focus,
+.light select:focus,
+.light textarea:focus {
+  border-color: #6366f1 !important;
+  outline: none !important;
+}
+
+/* Light theme specific component adjustments */
+.light .ring-purple-500\/40 {
+  --tw-ring-color: rgba(147, 51, 234, 0.2) !important;
+}
+
+.light .ring-indigo-400 {
+  --tw-ring-color: #818cf8 !important;
+}
+
+/* Gradient backgrounds for light theme */
+.light .bg-gradient-to-br.from-white\/5.to-white\/10 {
+  background: linear-gradient(to bottom right, #f9fafb, #f3f4f6) !important;
+}
+
+.light .bg-gradient-to-r.from-indigo-500\/20.to-purple-500\/20 {
+  background: linear-gradient(to right, rgba(79, 70, 229, 0.1), rgba(147, 51, 234, 0.1)) !important;
+}
+
+/* Settings page specific light theme adjustments */
+.light .bg-gradient-to-b.from-\[\#0b0c10\].via-\[\#12141c\].to-\[\#0b0c10\] {
+  background: linear-gradient(to bottom, #ffffff, #f9fafb, #ffffff) !important;
+}

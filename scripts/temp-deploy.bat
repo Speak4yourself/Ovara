@@ -1,0 +1,2 @@
+set SUPABASE_ACCESS_TOKEN=sbp_101037c370d2ea67a1ac6f638f13148a88dc0c88
+npx supabase link --project-ref voluiferhsehqrlwsjaq

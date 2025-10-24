@@ -1,0 +1,64 @@
+{
+  "manifest_version": 3,
+  "name": "Ovara - AI Writing Assistant",
+  "version": "1.0.0",
+  "description": "AI-powered writing assistant with humanization, citation generation, and auto-typing",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus"
+  ],
+  "optional_permissions": [
+    "clipboardRead"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "autotyper-ui.html",
+        "assistant-sidebar.html",
+        "assistant-sidebar.js",
+        "settings.html",
+        "settings.js",
+        "privacy-policy.html",
+        "permissions-manager.html",
+        "permissions-manager.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "commands": {
+    "toggle-assistant": {
+      "suggested_key": {
+        "default": "Ctrl+Space",
+        "mac": "Command+Space"
+      },
+      "description": "Toggle Ovara Assistant sidebar"
+    },
+    "open-autotyper": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+T",
+        "mac": "Command+Shift+T"
+      },
+      "description": "Open Auto-Typer"
+    }
+  }
+}

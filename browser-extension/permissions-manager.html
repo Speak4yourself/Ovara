@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ovara Assistant - Permissions Manager</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #0b0c10 0%, #1f2937 100%);
+      color: #ffffff;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 16px;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.2s;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .info-banner {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .info-banner-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-banner-text {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .permissions-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .permission-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.2s;
+    }
+
+    .permission-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(99, 102, 241, 0.5);
+    }
+
+    .permission-card.enabled {
+      border-color: rgba(34, 197, 94, 0.5);
+      background: rgba(34, 197, 94, 0.05);
+    }
+
+    .permission-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .permission-info {
+      flex: 1;
+    }
+
+    .permission-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .permission-icon {
+      font-size: 24px;
+    }
+
+    .permission-subtitle {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .permission-status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 60px;
+      height: 32px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.2);
+      transition: 0.3s;
+      border-radius: 34px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(28px);
+    }
+
+    .status-text {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-text.enabled {
+      color: #22c55e;
+    }
+
+    .status-text.disabled {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .permission-description {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .permission-features {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .features-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .features-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .features-list li {
+      padding: 6px 0;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .features-list li:before {
+      content: "✓";
+      color: #6366f1;
+      font-weight: bold;
+    }
+
+    .permission-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge.required {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .badge.optional {
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .learn-more-btn {
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      color: #a5b4fc;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .learn-more-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: #6366f1;
+    }
+
+    .actions-footer {
+      margin-top: 40px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .action-button {
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .action-button.primary {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: white;
+    }
+
+    .action-button.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
+    }
+
+    .action-button.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    .action-button.secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .save-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+      font-weight: 600;
+      display: none;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .save-notification.show {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="settings.html" class="back-button">← Back to Settings</a>
+
+    <div class="header">
+      <h1>🔐 Privacy & Permissions</h1>
+      <p>Control which features can access your data</p>
+    </div>
+
+    <div class="info-banner">
+      <div class="info-banner-title">
+        <span>🛡️</span>
+        Your Privacy, Your Control
+      </div>
+      <div class="info-banner-text">
+        Every permission below is <strong>optional</strong> (except Active Tab Access which is required for basic functionality).
+        Disable any feature you're not comfortable with - we'll never collect data without your explicit consent.
+        <br><br>
+        <a href="privacy-policy.html" style="color: #a5b4fc; text-decoration: none; font-weight: 600;">
+          📖 Read Full Privacy Policy →
+        </a>
+      </div>
+    </div>
+
+    <div class="permissions-grid">
+      <!-- Clipboard Monitor -->
+      <div class="permission-card" id="clipboardCard">
+        <div class="permission-header">
+          <div class="permission-info">
+            <div class="permission-title">
+              <span class="permission-icon">📋</span>
+              Clipboard Monitor
+            </div>
+            <div class="permission-subtitle">Get instant help with copied text</div>
+          </div>
+          <div class="permission-status">
+            <label class="toggle-switch">
+              <input type="checkbox" id="clipboardToggle">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-text disabled" id="clipboardStatus">Disabled</span>
+          </div>
+        </div>
+        <div class="permission-description">
+          Shows notification when you copy text and offers instant actions like rewrite, summarize, or translate.
+          Works anywhere - not limited to specific websites.
+        </div>
+        <div class="permission-features">
+          <div class="features-title">Enables:</div>
+          <ul class="features-list">
+            <li>Copy text notification</li>
+            <li>Quick action suggestions</li>
+            <li>Universal clipboard assistance</li>
+          </ul>
+        </div>
+        <div class="permission-footer">
+          <span class="badge optional">Optional</span>
+          <a href="privacy-policy.html#clipboard" class="learn-more-btn">Learn More</a>
+        </div>
+      </div>
+
+      <!-- Auto-Suggestions -->
+      <div class="permission-card" id="autoSuggestCard">
+        <div class="permission-header">
+          <div class="permission-info">
+            <div class="permission-title">
+              <span class="permission-icon">⚡</span>
+              Auto-Suggestions While Typing
+            </div>
+            <div class="permission-subtitle">Real-time writing suggestions as you type</div>
+          </div>
+          <div class="permission-status">
+            <label class="toggle-switch">
+              <input type="checkbox" id="autoSuggestToggle">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-text disabled" id="autoSuggestStatus">Disabled</span>
+          </div>
+        </div>
+        <div class="permission-description">
+          Provides inline suggestions as you write, like GitHub Copilot for writing. Automatically excludes password and payment fields.
+        </div>
+        <div class="permission-features">
+          <div class="features-title">Enables:</div>
+          <ul class="features-list">
+            <li>Real-time writing suggestions</li>
+            <li>Sentence completion</li>
+            <li>Grammar corrections on-the-fly</li>
+          </ul>
+        </div>
+        <div class="permission-footer">
+          <span class="badge optional">Optional</span>
+          <a href="privacy-policy.html#auto-suggest" class="learn-more-btn">Learn More</a>
+        </div>
+      </div>
+
+      <!-- Email Thread Analyzer -->
+      <div class="permission-card" id="emailCard">
+        <div class="permission-header">
+          <div class="permission-info">
+            <div class="permission-title">
+              <span class="permission-icon">📧</span>
+              Email Thread Analyzer
+            </div>
+            <div class="permission-subtitle">Context-aware email assistance</div>
+          </div>
+          <div class="permission-status">
+            <label class="toggle-switch">
+              <input type="checkbox" id="emailToggle">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-text disabled" id="emailStatus">Disabled</span>
+          </div>
+        </div>
+        <div class="permission-description">
+          Analyzes email threads on Gmail/Outlook to provide summaries and draft context-aware responses. Only accesses threads when you click "Analyze Thread".
+        </div>
+        <div class="permission-features">
+          <div class="features-title">Enables:</div>
+          <ul class="features-list">
+            <li>Email thread summarization</li>
+            <li>Context-aware response drafting</li>
+            <li>Action item extraction</li>
+          </ul>
+        </div>
+        <div class="permission-footer">
+          <span class="badge optional">Optional</span>
+          <a href="privacy-policy.html#email" class="learn-more-btn">Learn More</a>
+        </div>
+      </div>
+
+      <!-- Voice Input -->
+      <div class="permission-card" id="voiceCard">
+        <div class="permission-header">
+          <div class="permission-info">
+            <div class="permission-title">
+              <span class="permission-icon">🎤</span>
+              Voice Input
+            </div>
+            <div class="permission-subtitle">Speak your prompts hands-free</div>
+          </div>
+          <div class="permission-status">
+            <label class="toggle-switch">
+              <input type="checkbox" id="voiceToggle">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-text disabled" id="voiceStatus">Disabled</span>
+          </div>
+        </div>
+        <div class="permission-description">
+          Use your microphone to speak prompts instead of typing. Uses browser's built-in speech recognition - no audio sent to our servers.
+        </div>
+        <div class="permission-features">
+          <div class="features-title">Enables:</div>
+          <ul class="features-list">
+            <li>Voice-to-text for prompts</li>
+            <li>Hands-free operation</li>
+            <li>Accessibility features</li>
+          </ul>
+        </div>
+        <div class="permission-footer">
+          <span class="badge optional">Optional</span>
+          <a href="privacy-policy.html#voice" class="learn-more-btn">Learn More</a>
+        </div>
+      </div>
+
+      <!-- Context Menu -->
+      <div class="permission-card" id="contextMenuCard">
+        <div class="permission-header">
+          <div class="permission-info">
+            <div class="permission-title">
+              <span class="permission-icon">🖱️</span>
+              Context Menu (Right-Click)
+            </div>
+            <div class="permission-subtitle">Quick access from right-click menu</div>
+          </div>
+          <div class="permission-status">
+            <label class="toggle-switch">
+              <input type="checkbox" id="contextMenuToggle">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-text disabled" id="contextMenuStatus">Disabled</span>
+          </div>
+        </div>
+        <div class="permission-description">
+          Adds "Ask Ovara" to the right-click menu when you select text. Provides quick access to AI assistance.
+        </div>
+        <div class="permission-features">
+          <div class="features-title">Enables:</div>
+          <ul class="features-list">
+            <li>Right-click "Ask Ovara"</li>
+            <li>Quick action menu</li>
+            <li>Faster workflow</li>
+          </ul>
+        </div>
+        <div class="permission-footer">
+          <span class="badge optional">Optional</span>
+          <a href="privacy-policy.html#context-menu" class="learn-more-btn">Learn More</a>
+        </div>
+      </div>
+
+      <!-- Meeting Assistant -->
+      <div class="permission-card" id="meetingCard">
+        <div class="permission-header">
+          <div class="permission-info">
+            <div class="permission-title">
+              <span class="permission-icon">🎥</span>
+              Meeting Notes Assistant
+            </div>
+            <div class="permission-subtitle">Automatic meeting detection and notes</div>
+          </div>
+          <div class="permission-status">
+            <label class="toggle-switch">
+              <input type="checkbox" id="meetingToggle">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-text disabled" id="meetingStatus">Disabled</span>
+          </div>
+        </div>
+        <div class="permission-description">
+          Detects when you're in Google Meet or Zoom and offers to take notes and extract action items. Does NOT access meeting audio or video.
+        </div>
+        <div class="permission-features">
+          <div class="features-title">Enables:</div>
+          <ul class="features-list">
+            <li>Meeting platform detection</li>
+            <li>Notes and action items</li>
+            <li>Follow-up email generation</li>
+          </ul>
+        </div>
+        <div class="permission-footer">
+          <span class="badge optional">Optional</span>
+          <a href="privacy-policy.html#meeting" class="learn-more-btn">Learn More</a>
+        </div>
+      </div>
+
+      <!-- Grammar Checker -->
+      <div class="permission-card" id="grammarCard">
+        <div class="permission-header">
+          <div class="permission-info">
+            <div class="permission-title">
+              <span class="permission-icon">✍️</span>
+              Real-time Grammar Checker
+            </div>
+            <div class="permission-subtitle">Grammarly-style inline suggestions</div>
+          </div>
+          <div class="permission-status">
+            <label class="toggle-switch">
+              <input type="checkbox" id="grammarToggle">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="status-text disabled" id="grammarStatus">Disabled</span>
+          </div>
+        </div>
+        <div class="permission-description">
+          Provides real-time grammar checking with inline underlines and one-click fixes, just like Grammarly. Detects spelling, grammar, punctuation, and style issues.
+        </div>
+        <div class="permission-features">
+          <div class="features-title">Enables:</div>
+          <ul class="features-list">
+            <li>Real-time grammar checking</li>
+            <li>Inline error underlines</li>
+            <li>One-click fix suggestions</li>
+            <li>Spelling correction</li>
+            <li>Style improvements</li>
+          </ul>
+        </div>
+        <div class="permission-footer">
+          <span class="badge optional">Optional</span>
+          <a href="privacy-policy.html#grammar" class="learn-more-btn">Learn More</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions-footer">
+      <button class="action-button primary" id="saveBtn">💾 Save Preferences</button>
+      <button class="action-button secondary" id="enableAllBtn">✅ Enable All Features</button>
+      <button class="action-button secondary" id="disableAllBtn">🚫 Disable All Optional</button>
+      <a href="privacy-policy.html" class="action-button secondary">📖 Full Privacy Policy</a>
+    </div>
+  </div>
+
+  <div class="save-notification" id="saveNotification">
+    ✓ Preferences saved successfully!
+  </div>
+
+  <script src="permissions-manager.js"></script>
+</body>
+</html>
