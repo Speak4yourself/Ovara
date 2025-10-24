@@ -20,7 +20,7 @@ const searchSchema = z.object({
 // POST /api/search - Main search endpoint
 router.post('/', searchRateLimiter, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { query, type, page, count, aiEnabled } = searchSchema.parse(req.body);
+    const { query, type, count, aiEnabled } = searchSchema.parse(req.body);
 
     // Check cache first
     const cached = await cacheService.get(query, type);
@@ -88,7 +88,7 @@ router.get('/suggestions', async (req: Request, res: Response, next: NextFunctio
     }
 
     // For now, return empty (could integrate with Bing Autosuggest API)
-    res.json({
+    return res.json({
       suggestions: [
         `${query} tutorial`,
         `${query} guide`,
@@ -103,10 +103,10 @@ router.get('/suggestions', async (req: Request, res: Response, next: NextFunctio
 });
 
 // GET /api/search/trending - Get trending searches
-router.get('/trending', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/trending', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     // Mock trending queries (could be pulled from database)
-    res.json({
+    return res.json({
       trending: [
         'AI tools 2025',
         'ChatGPT alternatives',

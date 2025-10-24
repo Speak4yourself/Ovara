@@ -1,13 +1,12 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { AppError } from '../middleware/errorHandler';
 
 const router = Router();
 
 // GET /api/user/stats - Get user search statistics
-router.get('/stats', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/stats', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     // Mock user stats (would query database in production)
-    res.json({
+    return res.json({
       searchesThisMonth: 42,
       searchLimit: 100,
       tier: 'free',
@@ -20,10 +19,10 @@ router.get('/stats', async (req: Request, res: Response, next: NextFunction) => 
 });
 
 // GET /api/user/history - Get search history
-router.get('/history', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/history', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     // Mock history (would query database in production)
-    res.json({
+    return res.json({
       history: [
         {
           id: '1',
@@ -51,7 +50,7 @@ router.delete('/history/:id', async (req: Request, res: Response, next: NextFunc
     const { id } = req.params;
 
     // Mock deletion
-    res.json({
+    return res.json({
       success: true,
       message: `History item ${id} deleted`
     });
@@ -66,7 +65,7 @@ router.put('/preferences', async (req: Request, res: Response, next: NextFunctio
     const preferences = req.body;
 
     // Mock preferences update
-    res.json({
+    return res.json({
       success: true,
       preferences
     });

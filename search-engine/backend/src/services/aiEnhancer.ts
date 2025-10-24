@@ -147,7 +147,7 @@ Answer:`;
     }
   }
 
-  async rankResults(query: string, results: SearchResult[]): Promise<SearchResult[]> {
+  async rankResults(_query: string, results: SearchResult[]): Promise<SearchResult[]> {
     // For now, return results as-is (can add AI ranking later for cost optimization)
     // AI ranking would use GPT-3.5 to reorder by relevance
     return results;
